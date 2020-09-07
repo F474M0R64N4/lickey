@@ -30,10 +30,25 @@ namespace
 
 	typedef struct DecryptLicense
 	{
+		/**
+		 * \brief HWID
+		 */
 		HardwareKey key;
+		/**
+		 * \brief Vendor
+		 */
 		std::string vendorName;
+		/**
+		 * \brief Application Name
+		 */
 		std::string appName;
+		/**
+		 * \brief First Feature checksum
+		 */
 		Hash firstFeatureSign;
+		/**
+		 * \brief Explicit salt
+		 */
 		Salt explicitSalt;
 	} DL;
 
@@ -129,6 +144,7 @@ namespace
 		const std::vector<std::string>& lines,
 		std::string& data)
 	{
+		// проверим разделитель в строке
 		const auto isDataDelimiter = [](const std::string& line)
 		{
 			const std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
@@ -147,10 +163,11 @@ namespace
 		};
 		bool doesDataExist = false;
 		bool isInData = false;
-		std::stringstream dataStream;
+		std::stringstream dataStream; // буфер под лицензию
 
 		for (size_t i = 0; i < lines.size(); ++i)
 		{
+			// проверка 
 			if (isDataDelimiter(lines[i]))
 			{
 				isInData = !isInData;
@@ -165,13 +182,13 @@ namespace
 
 			if (isInData)
 			{
-				dataStream << lines[i];
-				doesDataExist = true;
+				dataStream << lines[i]; // запишем строки секции data в буфер
+				doesDataExist = true; // секция data найдена
 			}
 		}
 
 		data = dataStream.str();
-		return doesDataExist;
+		return doesDataExist; // возвратим флаг
 	}
 
 
@@ -231,24 +248,31 @@ namespace
 		size_t datalen
 	)
 	{
+		// буфер для ключа расшифровки
 		unsigned char encryptionKey[16];
 
+		// создадим ключ расшифровки
 		if (!MakeEncryptionKey(dl.key, dl.vendorName, dl.appName, dl.firstFeatureSign, dl.explicitSalt, encryptionKey))
 		{
 			LOG(error) << "fail to get key";
 			return false;
 		}
 
+		// буфер для ключа инициализации
 		unsigned char encryptionIv[16];
 
+		// создадим ключ инициализации
 		if (!MakeEncryptionIv(dl.key, dl.explicitSalt, encryptionKey, encryptionIv))
 		{
 			LOG(error) << "fail to get iv";
 			return false;
 		}
 
+		// буфер для расшифрованных данных
 		unsigned char decryptedImpl[BUF_SIZE] = {'\0'};
+		//размер расшифрованных данных
 		size_t decryptedImplSize = BUF_SIZE;
+		// расшифровываем данные
 		Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
 		char* decryptedImplChar = static_cast<char*>(malloc(decryptedImplSize));
 		boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
@@ -262,6 +286,7 @@ namespace
 			return false;
 		}
 
+		// соль
 		char* saltImpl = static_cast<char*>(malloc(
 			static_cast<size_t>(sizeof(char) * static_cast<size_t>(CalcBase64EncodedSize(32)) + 1)));
 
@@ -278,6 +303,7 @@ namespace
 			implicitSalt = saltImpl;
 		}
 
+		// дата лицензии
 		char* dateImpl = static_cast<char*>(malloc(sizeof(char) * 8 + 1));
 
 		if (dateImpl == nullptr)
@@ -357,8 +383,8 @@ namespace lickey
 	bool LicenseManager::isLicenseDecrypt(const HardwareKey& key, License& license, int decodedSize2,
 	                                      unsigned char* decoded2)
 	{
-		DL decrypt_license;
-		decrypt_license.key = key;
+		DL decrypt_license; // структура дешифрованной лицензии
+		decrypt_license.key = key; 
 		decrypt_license.vendorName = vendorName;
 		decrypt_license.appName = appName;
 		decrypt_license.firstFeatureSign = license.features.begin()->second.sign;
@@ -389,12 +415,13 @@ namespace lickey
 	bool LicenseManager::isLicenseDataSectionRead(const HardwareKey& key, License& license,
 	                                              std::vector<std::string> lines)
 	{
+		// буфер под лицензию
 		std::string data;
 
 		if (FindDataSection(lines, data))
 		{
 			int decodedSize = 0;
-			unsigned char* decoded = nullptr;
+			unsigned char* decoded = nullptr; // дешифрованная лицензия
 			DecodeBase64(data, decoded, decodedSize);
 			boost::scoped_array<unsigned char> scopedDecoded(decoded);
 
@@ -409,22 +436,24 @@ namespace lickey
 			std::istringstream dataSection(dataBuffer, std::ios::binary);
 			dataSection.read(static_cast<char*>(&license.fileVersion), sizeof(unsigned int));
 			int saltLengthInBase64 = CalcBase64EncodedSize(32);
-			char* saltImpl = static_cast<char*>(malloc(
-				static_cast<size_t>(sizeof(char) * static_cast<size_t>(saltLengthInBase64) + 1)));
+			// соль лицензии
+			char* salt = static_cast<char*>(malloc(static_cast<size_t>(sizeof(char) * static_cast<size_t>(saltLengthInBase64) + 1)));
 
-			if (saltImpl == nullptr)
+			if (salt == nullptr)
 			{
-				assert(saltImpl);
+				assert(salt);
 			}
 			else
 			{
-				boost::scoped_array<char> scopedSaltImpl(saltImpl);
-				dataSection.read(saltImpl, static_cast<int>(sizeof(char)) * saltLengthInBase64);
+				boost::scoped_array<char> scopedSaltImpl(salt);
+				dataSection.read(salt, static_cast<int>(sizeof(char)) * saltLengthInBase64);
 				size_t it = static_cast<size_t>(saltLengthInBase64); //memsize
-				saltImpl[it] = '\0';
-				license.explicitSalt = saltImpl;
+				salt[it] = '\0';
+				// "точная" соль лицензии
+				license.explicitSalt = salt;
 			}
 
+			// оставшееся количество символов в лицензии
 			int remainLen = decodedSize - saltLengthInBase64 - static_cast<int>(sizeof(unsigned int));
 
 			if (1 > remainLen)
@@ -433,6 +462,7 @@ namespace lickey
 				return false;
 			}
 
+			// выделим память остальные данные лицензии
 			char* base64Encrypted = static_cast<char*>(malloc(
 				static_cast<size_t>(sizeof(char) * static_cast<size_t>(remainLen) + 1)));
 
@@ -447,16 +477,16 @@ namespace lickey
 				size_t it = static_cast<size_t>(remainLen); //memsize
 				base64Encrypted[it] = '\0';
 				int decodedSize2 = 0;
-				unsigned char* decoded2 = nullptr;
-				DecodeBase64(base64Encrypted, decoded2, decodedSize2);
+				unsigned char* decoded2 = nullptr; // буфер под дешифрованную лицензию
+				DecodeBase64(base64Encrypted, decoded2, decodedSize2); // дешифруем лицензию из base64 формата
 				boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
-				return isLicenseDecrypt(key, license, decodedSize2, decoded2);
+				return isLicenseDecrypt(key, license, decodedSize2, decoded2); // дешифруем лицензию
 			}
 
 			return false;
 		}
 
-		LOG(error) << "no data sections";
+		LOG(error) << "no data sections"; // ошибка мол нет секции лицензии
 		return false;
 	}
 
@@ -530,18 +560,19 @@ namespace lickey
 
 	bool LicenseManager::UpdateLicense()
 	{
-		std::string encrypted;
+		std::string encrypted; // зашифрованная лицензия
 		Date today;
-		SetToday(today);
+		SetToday(today); // назначим теперешнюю дату
 		EL encrypt_license;
-		encrypt_license.key = loadedLicense.key;
-		encrypt_license.vendorName = vendorName;
-		encrypt_license.appName = appName;
-		encrypt_license.firstFeatureSign = loadedLicense.features.begin()->second.sign;
+		encrypt_license.key = loadedLicense.key; // hwid ПК
+		encrypt_license.vendorName = vendorName; // vendor
+		encrypt_license.appName = appName; // имя программы
+		encrypt_license.firstFeatureSign = loadedLicense.features.begin()->second.sign; // контрольная сумма
 		encrypt_license.explicitSalt = loadedLicense.explicitSalt;
 		encrypt_license.implicitSalt = loadedLicense.implicitSalt;
-		encrypt_license.lastUsedDate = today;
+		encrypt_license.lastUsedDate = today; // когда использовали последний раз лицензию
 
+		// зашифруем данные
 		if (EncryptData(encrypt_license, encrypted))
 		{
 			std::ostringstream dataSection(std::ios::binary);
@@ -551,6 +582,7 @@ namespace lickey
 			dataSection.write(explictSaltValue.c_str(), sizeof(char) * explictSaltValue.size());
 			dataSection.write(encrypted.c_str(), sizeof(char) * encrypted.size());
 			EncodeBase64(dataSection.str(), encrypted);
+			// запись в файл
 			std::ofstream out(licenseFilepath.c_str());
 
 			if (out)
@@ -562,7 +594,8 @@ namespace lickey
 				{
 					out << Convert(cit->first, cit->second) << "\n";
 				}
-
+				
+			    // запишем обратно в файл новые данные
 				out << "\n";
 				out << DATA_SECTION_DELIMITER << "\n";
 				out << encrypted << "\n";
@@ -571,11 +604,11 @@ namespace lickey
 				return true;
 			}
 
-			LOG(error) << "fail to open = " << licenseFilepath;
+			LOG(error) << "fail to open = " << licenseFilepath; // вывод ошибки открытия файла
 			return false;
 		}
 
-		LOG(error) << "fail to make data section";
+		LOG(error) << "fail to make data section"; // ошибка создания секции "data"
 		return false;
 	}
 
@@ -611,16 +644,17 @@ namespace lickey
 		std::string& featureName,
 		FeatureInfo& featureInfo)
 	{
-		std::vector<std::string> tokens;
-		Split(line, tokens);
+		std::vector<std::string> tokens; // храним тут все токены 
+		Split(line, tokens); // из строки вытаскиваем все токены
 
+		// если токенов нет - разворачиваем обратно
 		if (tokens.empty())
 		{
 			return false;
 		}
 
-		FeatureTree featureTree;
-		MakeFeatureTree(tokens, featureTree);
+		FeatureTree featureTree; // дерево данных лицензии
+		MakeFeatureTree(tokens, featureTree); // преобразуем токены в дерево
 		FTItr it = featureTree.find("feature");
 
 		if (featureTree.end() == it)
@@ -628,7 +662,7 @@ namespace lickey
 			return false;
 		}
 
-		it = featureTree.find("name");
+		it = featureTree.find("name"); // имя лицензии
 
 		if (featureTree.end() == it)
 		{
@@ -637,7 +671,7 @@ namespace lickey
 		}
 
 		featureName = it->second;
-		it = featureTree.find("version");
+		it = featureTree.find("version"); // версия лицензии
 
 		if (featureTree.end() == it)
 		{
@@ -646,7 +680,7 @@ namespace lickey
 		}
 
 		featureInfo.version.version = it->second;
-		it = featureTree.find("issue");
+		it = featureTree.find("issue"); // когда выдана лицензия
 
 		if (featureTree.end() == it)
 		{
@@ -660,7 +694,7 @@ namespace lickey
 			return false;
 		}
 
-		it = featureTree.find("expire");
+		it = featureTree.find("expire"); // конец даты лицензии
 
 		if (featureTree.end() == it)
 		{
@@ -674,7 +708,7 @@ namespace lickey
 			return false;
 		}
 
-		it = featureTree.find("num");
+		it = featureTree.find("num"); // количество выданных лицензий
 
 		if (featureTree.end() == it)
 		{
@@ -683,7 +717,7 @@ namespace lickey
 		}
 
 		featureInfo.numLics = boost::lexical_cast<int>(it->second);
-		it = featureTree.find("sign");
+		it = featureTree.find("sign"); // контрольная сумма лицензии
 
 		if (featureTree.end() == it)
 		{
