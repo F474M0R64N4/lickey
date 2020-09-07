@@ -16,6 +16,6 @@ namespace lickey
 		std::string Value() const
 		{
 			return salt;
-		};
+		}
 	};
 }

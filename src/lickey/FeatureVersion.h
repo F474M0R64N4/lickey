@@ -17,7 +17,7 @@ namespace lickey
 		const std::string& Value() const
 		{
 			return version;
-		};
+		}
 
 	private:
 		std::string version;

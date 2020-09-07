@@ -18,27 +18,27 @@ namespace lickey
 		const FeatureVersion& Version() const
 		{
 			return version;
-		};
+		}
 
 		unsigned int NumLics() const
 		{
 			return numLics;
-		};
+		}
 
 		const Date& IssueDate() const
 		{
 			return issueDate;
-		};
+		}
 
 		const Date& ExpireDate() const
 		{
 			return expireDate;
-		};
+		}
 
 		const Hash& Sign() const
 		{
 			return sign;
-		};
+		}
 
 	private:
 		FeatureVersion version;

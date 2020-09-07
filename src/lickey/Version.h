@@ -12,7 +12,7 @@ namespace lickey
 		unsigned int Value() const
 		{
 			return version;
-		};
+		}
 
 	private:
 		Version();

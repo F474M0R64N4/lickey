@@ -26,6 +26,6 @@ namespace lickey
 		Features& FeatureMap()
 		{
 			return features;
-		};
+		}
 	};
 };

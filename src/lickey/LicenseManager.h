@@ -41,22 +41,22 @@ namespace lickey
 		const std::string& VendorName() const
 		{
 			return vendorName;
-		};
+		}
 
 		const std::string& AppName() const
 		{
 			return appName;
-		};
+		}
 
 		const std::string& LicenseFilepath() const
 		{
 			return licenseFilepath;
-		};
+		}
 
 		bool IsLicenseLoaded() const
 		{
 			return isLicenseLoaded;
-		};
+		}
 
 	private:
 		static bool ConvertFeature(
