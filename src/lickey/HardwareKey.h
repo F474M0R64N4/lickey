@@ -23,5 +23,5 @@ namespace lickey
 		std::string key;
 	};
 
-	typedef std::vector<HardwareKey> HardwareKeys;
+	using HardwareKeys = std::vector<HardwareKey>;
 }

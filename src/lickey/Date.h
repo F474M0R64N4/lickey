@@ -3,7 +3,7 @@
 
 namespace lickey
 {
-	typedef boost::gregorian::date Date;
+	using Date = boost::gregorian::date;
 
 	bool Load(Date& date, const std::string& str);
 	void SetToday(Date& date);

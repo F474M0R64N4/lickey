@@ -18,7 +18,7 @@ namespace
 	const unsigned int BUF_SIZE = 65536;
 	const std::string DATA_SECTION_DELIMITER = "***";
 
-	typedef struct EncryptLicense
+	using EL = struct EncryptLicense
 	{
 		HardwareKey key;
 		std::string vendorName;
@@ -27,9 +27,9 @@ namespace
 		Salt explicitSalt;
 		Salt implicitSalt;
 		Date lastUsedDate;
-	} EL;
+	};
 
-	typedef struct DecryptLicense
+	using DL = struct DecryptLicense
 	{
 		/**
 		 * \brief HWID
@@ -51,14 +51,14 @@ namespace
 		 * \brief Explicit salt
 		 */
 		Salt explicitSalt;
-	} DL;
+	};
 
 	struct UnsignedChar2Char
 	{
 		char operator()(unsigned char c) const
 		{
 			return static_cast<char>(c);
-		};
+		}
 	};
 
 	auto IntoChar = [](unsigned char c)
@@ -92,8 +92,8 @@ namespace
 
 namespace
 {
-	typedef std::map<std::string, std::string> FeatureTree;
-	typedef FeatureTree::iterator FTItr;
+	using FeatureTree = std::map<std::string, std::string>;
+	using FTItr = FeatureTree::iterator;
 
 
 	void Split(const std::string& line, std::vector<std::string>& tokens, const std::string& delim = " ")
