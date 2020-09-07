@@ -9,6 +9,7 @@
 #include <boost/scoped_array.hpp>
 #include <algorithm>
 #include <fstream>
+#include <utility>
 
 namespace
 {
@@ -110,14 +111,14 @@ namespace
 		const std::vector<std::string>& tokens,
 		FeatureTree& tree)
 	{
-		for (size_t i = 0; i < tokens.size(); ++i)
+		for (const auto & token : tokens)
 		{
 			std::vector<std::string> subTokens;
-			Split(tokens[i], subTokens, "=");
+			Split(token, subTokens, "=");
 
 			if (2 > subTokens.size())
 			{
-				if (0 == subTokens.front().compare("feature"))
+				if ("feature" == subTokens.front())
 				{
 					tree["feature"] = "feature";
 				}
@@ -125,10 +126,10 @@ namespace
 				continue;
 			}
 
-			if (0 == subTokens.front().compare("sign"))
+			if ("sign" == subTokens.front())
 			{
 				// because sign value can have "=",
-				tree["sign"] = tokens[i].substr(5, tokens[i].size() - 5);
+				tree["sign"] = token.substr(5, token.size() - 5);
 			}
 			else
 			{
@@ -165,10 +166,10 @@ namespace
 		bool isInData = false;
 		std::stringstream dataStream; // буфер под лицензию
 
-		for (size_t i = 0; i < lines.size(); ++i)
+		for (const auto & line : lines)
 		{
 			// проверка 
-			if (isDataDelimiter(lines[i]))
+			if (isDataDelimiter(line))
 			{
 				isInData = !isInData;
 
@@ -182,7 +183,7 @@ namespace
 
 			if (isInData)
 			{
-				dataStream << lines[i]; // запишем строки секции data в буфер
+				dataStream << line; // запишем строки секции data в буфер
 				doesDataExist = true; // секция data найдена
 			}
 		}
@@ -241,7 +242,7 @@ namespace
 
 
 	bool DecryptData(
-		const DL dl,
+		const DL& dl,
 		Salt& implicitSalt,
 		Date& lastUsedDate,
 		unsigned char* data,
@@ -298,7 +299,7 @@ namespace
 		{
 			boost::scoped_array<char> scopedSaltImpl(saltImpl);
 			src.read(saltImpl, static_cast<int>(sizeof(char)) * CalcBase64EncodedSize(32));
-			size_t it = static_cast<size_t>(CalcBase64EncodedSize(32)); //memsize
+			auto it = static_cast<size_t>(CalcBase64EncodedSize(32)); //memsize
 			saltImpl[it] = '\0';
 			implicitSalt = saltImpl;
 		}
@@ -364,10 +365,10 @@ namespace
 namespace lickey
 {
 	LicenseManager::LicenseManager(
-		const std::string& vn,
-		const std::string& an)
-		: vendorName(vn)
-		  , appName(an)
+		std::string  vn,
+		std::string  an)
+		: vendorName(std::move(vn))
+		  , appName(std::move(an))
 		  , isLicenseLoaded(false)
 	{
 		InitializeOpenSSL();
@@ -396,7 +397,7 @@ namespace lickey
 		))
 		{
 			// validate each feature
-			for (Features::iterator cit = license.features.begin(); cit != license.features.end(); ++cit)
+			for (auto cit = license.features.begin(); cit != license.features.end(); ++cit)
 			{
 				Hash checkSum;
 				MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
@@ -413,7 +414,7 @@ namespace lickey
 	}
 
 	bool LicenseManager::isLicenseDataSectionRead(const HardwareKey& key, License& license,
-	                                              std::vector<std::string> lines)
+	                                              const std::vector<std::string>& lines)
 	{
 		// буфер под лицензию
 		std::string data;
@@ -447,7 +448,7 @@ namespace lickey
 			{
 				boost::scoped_array<char> scopedSaltImpl(salt);
 				dataSection.read(salt, static_cast<int>(sizeof(char)) * saltLengthInBase64);
-				size_t it = static_cast<size_t>(saltLengthInBase64); //memsize
+				auto it = static_cast<size_t>(saltLengthInBase64); //memsize
 				salt[it] = '\0';
 				// "точная" соль лицензии
 				license.explicitSalt = salt;
@@ -474,7 +475,7 @@ namespace lickey
 			{
 				boost::scoped_array<char> scpdBase64Encrypted(base64Encrypted);
 				dataSection.read(base64Encrypted, static_cast<int>(sizeof(char)) * remainLen);
-				size_t it = static_cast<size_t>(remainLen); //memsize
+				auto it = static_cast<size_t>(remainLen); //memsize
 				base64Encrypted[it] = '\0';
 				int decodedSize2 = 0;
 				unsigned char* decoded2 = nullptr; // буфер под дешифрованную лицензию
@@ -497,12 +498,12 @@ namespace lickey
 		if (ReadLines(filepath, lines))
 		{
 			// load features section
-			for (size_t i = 0; i < lines.size(); ++i)
+			for (auto & line : lines)
 			{
 				std::string featureName;
 				FeatureInfo featureInfo;
 
-				if (ConvertFeature(lines[i], featureName, featureInfo))
+				if (ConvertFeature(line, featureName, featureInfo))
 				{
 					license.features[featureName] = featureInfo;
 				}
@@ -544,11 +545,11 @@ namespace lickey
 			MakeSalt(loadedLicense.explicitSalt);
 			MakeSalt(loadedLicense.implicitSalt);
 
-			for (Features::iterator it = loadedLicense.features.begin(); it != loadedLicense.features.end(); ++it)
+			for (auto & feature : loadedLicense.features)
 			{
 				Hash sign;
-				MakeFeatureSign(it->first, it->second, loadedLicense.implicitSalt, sign);
-				it->second.sign = sign;
+				MakeFeatureSign(feature.first, feature.second, loadedLicense.implicitSalt, sign);
+				feature.second.sign = sign;
 			}
 
 			return UpdateLicense();
@@ -587,12 +588,9 @@ namespace lickey
 
 			if (out)
 			{
-				for (Features::const_iterator cit = loadedLicense.features.begin(); cit != loadedLicense.features.
-				     end();
-				     ++
-				     cit)
+				for (const auto & feature : loadedLicense.features)
 				{
-					out << Convert(cit->first, cit->second) << "\n";
+					out << Convert(feature.first, feature.second) << "\n";
 				}
 				
 			    // запишем обратно в файл новые данные
@@ -655,7 +653,7 @@ namespace lickey
 
 		FeatureTree featureTree; // дерево данных лицензии
 		MakeFeatureTree(tokens, featureTree); // преобразуем токены в дерево
-		FTItr it = featureTree.find("feature");
+		auto it = featureTree.find("feature");
 
 		if (featureTree.end() == it)
 		{

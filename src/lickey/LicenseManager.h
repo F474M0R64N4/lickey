@@ -18,19 +18,19 @@ namespace lickey
 		License loadedLicense;
 
 	public:
-		LicenseManager(const std::string& vn, const std::string& an);
+		LicenseManager(std::string  vn, std::string  an);
 		virtual ~LicenseManager();
 
 		bool Load(const std::string& filepath, const HardwareKey& key, License& license);
 		bool isLicenseDecrypt(const HardwareKey& key, License& license, int decodedSize2, unsigned char* decoded2);
-		bool isLicenseDataSectionRead(const HardwareKey& key, License& license, std::vector<std::string> lines);
+		bool isLicenseDataSectionRead(const HardwareKey& key, License& license, const std::vector<std::string>& lines);
 		bool isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license);
 
 		bool Update();
 		bool UpdateLicense();
 
 		bool Save(const std::string& filepath, const HardwareKey& key, License& license);
-		void Add(
+		static void Add(
 			const std::string& featureName,
 			const FeatureVersion& featureVersion,
 			const Date& issueDate,
@@ -59,7 +59,7 @@ namespace lickey
 		};
 
 	private:
-		bool ConvertFeature(
+		static bool ConvertFeature(
 			const std::string& line,
 			std::string& featureName,
 			FeatureInfo& featureInfo);
