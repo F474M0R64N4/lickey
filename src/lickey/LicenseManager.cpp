@@ -111,7 +111,7 @@ namespace
 		const std::vector<std::string>& tokens,
 		FeatureTree& tree)
 	{
-		for (const auto & token : tokens)
+		for (const auto& token : tokens)
 		{
 			std::vector<std::string> subTokens;
 			Split(token, subTokens, "=");
@@ -166,7 +166,7 @@ namespace
 		bool isInData = false;
 		std::stringstream dataStream; // буфер под лицензию
 
-		for (const auto & line : lines)
+		for (const auto& line : lines)
 		{
 			// проверка 
 			if (isDataDelimiter(line))
@@ -365,8 +365,8 @@ namespace
 namespace lickey
 {
 	LicenseManager::LicenseManager(
-		std::string  vn,
-		std::string  an)
+		std::string vn,
+		std::string an)
 		: vendorName(std::move(vn))
 		  , appName(std::move(an))
 		  , isLicenseLoaded(false)
@@ -385,7 +385,7 @@ namespace lickey
 	                                      unsigned char* decoded2)
 	{
 		DL decrypt_license; // структура дешифрованной лицензии
-		decrypt_license.key = key; 
+		decrypt_license.key = key;
 		decrypt_license.vendorName = vendorName;
 		decrypt_license.appName = appName;
 		decrypt_license.firstFeatureSign = license.features.begin()->second.sign;
@@ -438,7 +438,8 @@ namespace lickey
 			dataSection.read(static_cast<char*>(&license.fileVersion), sizeof(unsigned int));
 			int saltLengthInBase64 = CalcBase64EncodedSize(32);
 			// соль лицензии
-			char* salt = static_cast<char*>(malloc(static_cast<size_t>(sizeof(char) * static_cast<size_t>(saltLengthInBase64) + 1)));
+			char* salt = static_cast<char*>(malloc(
+				static_cast<size_t>(sizeof(char) * static_cast<size_t>(saltLengthInBase64) + 1)));
 
 			if (salt == nullptr)
 			{
@@ -498,7 +499,7 @@ namespace lickey
 		if (ReadLines(filepath, lines))
 		{
 			// load features section
-			for (auto & line : lines)
+			for (auto& line : lines)
 			{
 				std::string featureName;
 				FeatureInfo featureInfo;
@@ -545,7 +546,7 @@ namespace lickey
 			MakeSalt(loadedLicense.explicitSalt);
 			MakeSalt(loadedLicense.implicitSalt);
 
-			for (auto & feature : loadedLicense.features)
+			for (auto& feature : loadedLicense.features)
 			{
 				Hash sign;
 				MakeFeatureSign(feature.first, feature.second, loadedLicense.implicitSalt, sign);
@@ -588,12 +589,12 @@ namespace lickey
 
 			if (out)
 			{
-				for (const auto & feature : loadedLicense.features)
+				for (const auto& feature : loadedLicense.features)
 				{
 					out << Convert(feature.first, feature.second) << "\n";
 				}
-				
-			    // запишем обратно в файл новые данные
+
+				// запишем обратно в файл новые данные
 				out << "\n";
 				out << DATA_SECTION_DELIMITER << "\n";
 				out << encrypted << "\n";
