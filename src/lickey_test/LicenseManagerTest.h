@@ -18,16 +18,14 @@ BOOST_AUTO_TEST_CASE(Constructor01)
         return;
     }
     {
-        lickey::LicenseManager licMgr("eandt", "mujo-cadread");
+        lickey::LicenseManager licMgr("v", "a");
         lickey::License lic;
-        licMgr.Load("test(CC-E1-D5-41-21-D6).txt", keys.front(), lic);
+        licMgr.Load(R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\1(84-16-F9-F5-79-9F))", keys.front(), lic);
 
-        BOOST_CHECK_EQUAL(false, lic.FeatureMap().IsExpired("base"));
-        BOOST_CHECK_EQUAL(true, lic.FeatureMap().IsValid("base"));
+        BOOST_CHECK_EQUAL(false, lic.FeatureMap().IsExpired("full"));
+        BOOST_CHECK_EQUAL(true, lic.FeatureMap().IsValid("full"));
     }
 }
-
-
 
 BOOST_AUTO_TEST_SUITE_END()
 #pragma once
