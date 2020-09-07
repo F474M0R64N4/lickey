@@ -10,10 +10,10 @@ namespace lickey
 		Salt();
 		Salt(const Salt& obj);
 		virtual ~Salt();
-		Salt& operator=(const Salt& obj);
-		Salt& operator=(const std::string& obj);
+		auto operator=(const Salt& obj) -> Salt&;
+		auto operator=(const std::string& obj) -> Salt&;
 
-		std::string Value() const
+		auto Value() const -> std::string
 		{
 			return salt;
 		}

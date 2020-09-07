@@ -10,13 +10,13 @@ namespace lickey
 		Hash();
 		Hash(const Hash& obj);
 		virtual ~Hash();
-		Hash& operator=(const Hash& obj);
-		Hash& operator=(const std::string& other);
+		auto operator=(const Hash& obj) -> Hash&;
+		auto operator=(const std::string& other) -> Hash&;
 
-		bool operator==(const Hash& other) const;
-		bool operator!=(const Hash& other) const;
+		auto operator==(const Hash& other) const -> bool;
+		auto operator!=(const Hash& other) const -> bool;
 
-		std::string Value() const
+		auto Value() const -> std::string
 		{
 			return hash;
 		}

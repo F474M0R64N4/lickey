@@ -11,10 +11,10 @@ namespace lickey
 		FeatureVersion(const FeatureVersion& obj);
 		virtual ~FeatureVersion();
 
-		FeatureVersion& operator=(const FeatureVersion& obj);
-		FeatureVersion& operator=(const std::string& v);
+		auto operator=(const FeatureVersion& obj) -> FeatureVersion&;
+		auto operator=(const std::string& v) -> FeatureVersion&;
 
-		const std::string& Value() const
+		auto Value() const -> const std::string&
 		{
 			return version;
 		}

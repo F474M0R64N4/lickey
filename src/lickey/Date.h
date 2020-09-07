@@ -5,7 +5,7 @@ namespace lickey
 {
 	using Date = boost::gregorian::date;
 
-	bool Load(Date& date, const std::string& str);
-	void SetToday(Date& date);
-	std::string ToString(const Date& date);
+	auto Load(Date& date, const std::string& str) -> bool;
+	auto SetToday(Date& date) -> void;
+	auto ToString(const Date& date) -> std::string;
 }

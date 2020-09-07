@@ -21,9 +21,9 @@ namespace lickey
 		License(const License& obj);
 		virtual ~License();
 
-		License& operator=(const License& obj);
+		auto operator=(const License& obj) -> License&;
 
-		Features& FeatureMap()
+		auto FeatureMap() -> Features&
 		{
 			return features;
 		}

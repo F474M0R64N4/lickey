@@ -12,30 +12,30 @@ namespace lickey
 	public:
 		FeatureInfo();
 		virtual ~FeatureInfo();
-		bool IsValid() const;
-		bool IsExpired() const;
+		auto IsValid() const -> bool;
+		auto IsExpired() const -> bool;
 
-		const FeatureVersion& Version() const
+		auto Version() const -> const FeatureVersion&
 		{
 			return version;
 		}
 
-		unsigned int NumLics() const
+		auto NumLics() const -> unsigned int
 		{
 			return numLics;
 		}
 
-		const Date& IssueDate() const
+		auto IssueDate() const -> const Date&
 		{
 			return issueDate;
 		}
 
-		const Date& ExpireDate() const
+		auto ExpireDate() const -> const Date&
 		{
 			return expireDate;
 		}
 
-		const Hash& Sign() const
+		auto Sign() const -> const Hash&
 		{
 			return sign;
 		}

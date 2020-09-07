@@ -9,6 +9,6 @@ namespace lickey
 		HardwareKeyGetter();
 		virtual ~HardwareKeyGetter();
 
-		HardwareKeys operator()() const;
+		auto operator()() const -> HardwareKeys;
 	};
 }

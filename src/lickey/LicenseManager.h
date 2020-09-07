@@ -21,47 +21,49 @@ namespace lickey
 		LicenseManager(std::string  vn, std::string  an);
 		virtual ~LicenseManager();
 
-		bool Load(const std::string& filepath, const HardwareKey& key, License& license);
-		bool isLicenseDecrypt(const HardwareKey& key, License& license, int decodedSize2, unsigned char* decoded2);
-		bool isLicenseDataSectionRead(const HardwareKey& key, License& license, const std::vector<std::string>& lines);
-		bool isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license);
+		auto Load(const std::string& filepath, const HardwareKey& key, License& license) -> bool;
+		auto isLicenseDecrypt(const HardwareKey& key, License& license, int decodedSize2,
+		                      unsigned char* decoded2) -> bool;
+		auto isLicenseDataSectionRead(const HardwareKey& key, License& license,
+		                              const std::vector<std::string>& lines) -> bool;
+		auto isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license) -> bool;
 
-		bool Update();
-		bool UpdateLicense();
+		auto Update() -> bool;
+		auto UpdateLicense() -> bool;
 
-		bool Save(const std::string& filepath, const HardwareKey& key, License& license);
-		static void Add(
+		auto Save(const std::string& filepath, const HardwareKey& key, License& license) -> bool;
+		static auto Add(
 			const std::string& featureName,
 			const FeatureVersion& featureVersion,
 			const Date& issueDate,
 			const Date& expireDate,
 			unsigned int numLics,
-			License& license);
+			License& license) -> void;
 
-		const std::string& VendorName() const
+		auto VendorName() const -> const std::string&
 		{
 			return vendorName;
 		}
 
-		const std::string& AppName() const
+		auto AppName() const -> const std::string&
 		{
 			return appName;
 		}
 
-		const std::string& LicenseFilepath() const
+		auto LicenseFilepath() const -> const std::string&
 		{
 			return licenseFilepath;
 		}
 
-		bool IsLicenseLoaded() const
+		auto IsLicenseLoaded() const -> bool
 		{
 			return isLicenseLoaded;
 		}
 
 	private:
-		static bool ConvertFeature(
+		static auto ConvertFeature(
 			const std::string& line,
 			std::string& featureName,
-			FeatureInfo& featureInfo);
+			FeatureInfo& featureInfo) -> bool;
 	};
 }

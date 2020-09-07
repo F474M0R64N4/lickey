@@ -55,7 +55,7 @@ namespace
 
 	struct UnsignedChar2Char
 	{
-		char operator()(unsigned char c) const
+		auto operator()(unsigned char c) const -> char
 		{
 			return static_cast<char>(c);
 		}
@@ -66,7 +66,7 @@ namespace
 		return static_cast<char>(c);
 	};
 
-	int CalcBase64EncodedSize(int origDataSize)
+	auto CalcBase64EncodedSize(int origDataSize) -> int
 	{
 		const int numBlocks6 = (origDataSize * 8 + 5) / 6; // the number of blocks (6 bits per a block, rounding up)
 		const int numBlocks4 = (numBlocks6 + 3) / 4; // the number of blocks (4 characters per a block, rounding up)
@@ -76,7 +76,7 @@ namespace
 	}
 
 
-	std::string Convert(const std::string& featureName, const FeatureInfo& featureInfo)
+	auto Convert(const std::string& featureName, const FeatureInfo& featureInfo) -> std::string
 	{
 		std::stringstream converted;
 		converted << "feature "
@@ -141,9 +141,9 @@ namespace
 	}
 
 
-	bool FindDataSection(
+	auto FindDataSection(
 		const std::vector<std::string>& lines,
-		std::string& data)
+		std::string& data) -> bool
 	{
 		// проверим разделитель в строке
 		const auto isDataDelimiter = [](const std::string& line)
@@ -193,13 +193,13 @@ namespace
 	}
 
 
-	bool MakeEncryptionKey(
+	auto MakeEncryptionKey(
 		const HardwareKey& key,
 		const std::string& vendorName,
 		const std::string& appName,
 		const Hash& firstFeatureSign,
 		const Salt& explicitSalt,
-		unsigned char encryptionKey[16])
+		unsigned char encryptionKey[16]) -> bool
 	{
 		std::stringstream src;
 		src << key.Value() << explicitSalt.Value() << vendorName << appName << firstFeatureSign.Value();
@@ -208,11 +208,11 @@ namespace
 	}
 
 
-	bool MakeEncryptionIv(
+	auto MakeEncryptionIv(
 		const HardwareKey& key,
 		const Salt& explicitSalt,
 		const unsigned char encryptionKey[16],
-		unsigned char encryptionIv[16])
+		unsigned char encryptionIv[16]) -> bool
 	{
 		std::string encodedKey;
 		EncodeBase64(encryptionKey, 16, encodedKey);
@@ -223,11 +223,11 @@ namespace
 	}
 
 
-	bool MakeFeatureSign(
+	auto MakeFeatureSign(
 		const std::string& featureName,
 		const FeatureInfo& featureInfo,
 		const Salt& implicitSalt,
-		Hash& sign)
+		Hash& sign) -> bool
 	{
 		std::stringstream src;
 		src << featureName << featureInfo.Version().Value() << ToString(featureInfo.IssueDate()) <<
@@ -241,13 +241,13 @@ namespace
 	}
 
 
-	bool DecryptData(
+	auto DecryptData(
 		const DL& dl,
 		Salt& implicitSalt,
 		Date& lastUsedDate,
 		unsigned char* data,
 		size_t datalen
-	)
+	) -> bool
 	{
 		// буфер для ключа расшифровки
 		unsigned char encryptionKey[16];
@@ -330,7 +330,7 @@ namespace
 	}
 
 
-	bool EncryptData(const EL& el, std::string& encrypted)
+	auto EncryptData(const EL& el, std::string& encrypted) -> bool
 	{
 		unsigned char encryptionKey[16];
 
@@ -377,8 +377,8 @@ namespace lickey
 	}
 
 
-	bool LicenseManager::isLicenseDecrypt(const HardwareKey& key, License& license, int decodedSize2,
-	                                      unsigned char* decoded2)
+	auto LicenseManager::isLicenseDecrypt(const HardwareKey& key, License& license, int decodedSize2,
+	                                      unsigned char* decoded2) -> bool
 	{
 		DL decrypt_license; // структура дешифрованной лицензии
 		decrypt_license.key = key;
@@ -409,8 +409,8 @@ namespace lickey
 		return false;
 	}
 
-	bool LicenseManager::isLicenseDataSectionRead(const HardwareKey& key, License& license,
-	                                              const std::vector<std::string>& lines)
+	auto LicenseManager::isLicenseDataSectionRead(const HardwareKey& key, License& license,
+	                                              const std::vector<std::string>& lines) -> bool
 	{
 		// буфер под лицензию
 		std::string data;
@@ -488,7 +488,7 @@ namespace lickey
 		return false;
 	}
 
-	bool LicenseManager::isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license)
+	auto LicenseManager::isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license) -> bool
 	{
 		std::vector<std::string> lines;
 
@@ -520,7 +520,7 @@ namespace lickey
 		return false;
 	}
 
-	bool LicenseManager::Load(const std::string& filepath, const HardwareKey& key, License& license)
+	auto LicenseManager::Load(const std::string& filepath, const HardwareKey& key, License& license) -> bool
 	{
 		licenseFilepath = filepath;
 		isLicenseLoaded = false;
@@ -529,7 +529,7 @@ namespace lickey
 		return isLicenseRead(filepath, key, license);
 	}
 
-	bool LicenseManager::Update()
+	auto LicenseManager::Update() -> bool
 	{
 		if (isLicenseLoaded)
 		{
@@ -556,7 +556,7 @@ namespace lickey
 		return false;
 	}
 
-	bool LicenseManager::UpdateLicense()
+	auto LicenseManager::UpdateLicense() -> bool
 	{
 		std::string encrypted; // зашифрованная лицензия
 		Date today;
@@ -607,7 +607,7 @@ namespace lickey
 		return false;
 	}
 
-	bool LicenseManager::Save(const std::string& filepath, const HardwareKey& key, License& license)
+	auto LicenseManager::Save(const std::string& filepath, const HardwareKey& key, License& license) -> bool
 	{
 		licenseFilepath = filepath;
 		loadedLicense = license;
@@ -634,10 +634,10 @@ namespace lickey
 	}
 
 
-	bool LicenseManager::ConvertFeature(
+	auto LicenseManager::ConvertFeature(
 		const std::string& line,
 		std::string& featureName,
-		FeatureInfo& featureInfo)
+		FeatureInfo& featureInfo) -> bool
 	{
 		std::vector<std::string> tokens; // храним тут все токены 
 		Split(line, tokens); // из строки вытаскиваем все токены

@@ -6,10 +6,10 @@ namespace lickey
 	{
 		char version;
 	public:
-		static Version& GetInstance();
+		static auto GetInstance() -> Version&;
 		virtual ~Version();
 
-		unsigned int Value() const
+		auto Value() const -> unsigned int
 		{
 			return version;
 		}

@@ -8,8 +8,8 @@ namespace lickey
 	class Features : public std::map<std::string, FeatureInfo>
 	{
 	public:
-		bool IsValid(const std::string& featureName) const;
-		bool IsExpired(const std::string& featureName) const;
-		bool IsExist(const std::string& featureName) const;
+		auto IsValid(const std::string& featureName) const -> bool;
+		auto IsExpired(const std::string& featureName) const -> bool;
+		auto IsExist(const std::string& featureName) const -> bool;
 	};
 }

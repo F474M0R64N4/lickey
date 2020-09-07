@@ -5,54 +5,54 @@ namespace lickey
 {
 	void InitializeOpenSSL();
 
-	bool Encrypt(
+	auto Encrypt(
 		const char* data,
 		size_t datalen,
 		const unsigned char* key,
 		const unsigned char* iv,
 		unsigned char* dest,
 		// const size_t destlen);
-		size_t& destlen);
+		size_t& destlen) -> bool;
 
 
-	bool Decrypt(
+	auto Decrypt(
 		const unsigned char* data,
 		size_t datalen,
 		const unsigned char* key,
 		const unsigned char* iv,
 		unsigned char* dest,
 		// const size_t destlen);
-		size_t& destlen);
+		size_t& destlen) -> bool;
 
 
-	bool MD5(
+	auto MD5(
 		const char* data,
 		size_t datalen,
-		unsigned char hash[16]);
+		unsigned char hash[16]) -> bool;
 
 
-	bool SHA256(
+	auto SHA256(
 		const char* data,
 		size_t datalen,
-		unsigned char hash[32]);
+		unsigned char hash[32]) -> bool;
 
 
-	void EncodeBase64(
+	auto EncodeBase64(
 		const unsigned char* data,
 		int datalen,
-		std::string& str);
+		std::string& str) -> void;
 
 
-	void EncodeBase64(
+	auto EncodeBase64(
 		const std::string& data,
-		std::string& str);
+		std::string& str) -> void;
 
 
-	void DecodeBase64(
+	auto DecodeBase64(
 		const std::string& str,
 		unsigned char*& data,
-		int& datalen);
+		int& datalen) -> void;
 
 
-	bool MakeSalt(Salt& salt);
+	auto MakeSalt(Salt& salt) -> bool;
 }
