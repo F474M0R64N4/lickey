@@ -16,7 +16,7 @@
 #pragma warning(push)
 #pragma warning(disable: 4996)
 #endif
-#include <openssl/applink.c>
+//#include <openssl/applink.c>
 #ifdef WIN32
 #ifdef WIN32_PREDEFINED
 #undef WIN32_PREDEFINED
@@ -193,7 +193,7 @@ namespace lickey
 		int n = BIO_read(bmem, data, datalen);
 		if (n > 0)
 		{
-			size_t it = static_cast<size_t>(n); // memsize
+			auto it = static_cast<size_t>(n); // memsize
 			data[it] = 0;
 			datalen = n;
 		}

@@ -299,7 +299,7 @@ namespace
 		{
 			boost::scoped_array<char> scopedSaltImpl(saltImpl);
 			src.read(saltImpl, static_cast<int>(sizeof(char)) * CalcBase64EncodedSize(32));
-			auto it = static_cast<size_t>(CalcBase64EncodedSize(32)); //memsize
+			const auto it = static_cast<size_t>(CalcBase64EncodedSize(32)); //memsize
 			saltImpl[it] = '\0';
 			implicitSalt = saltImpl;
 		}
@@ -432,7 +432,7 @@ namespace lickey
 			std::transform(decoded, decoded + static_cast<unsigned char>(decodedSize), dataBuffer.begin(), IntoChar);
 			std::istringstream dataSection(dataBuffer, std::ios::binary);
 			dataSection.read(static_cast<char*>(&license.fileVersion), sizeof(unsigned int));
-			int saltLengthInBase64 = CalcBase64EncodedSize(32);
+			const int saltLengthInBase64 = CalcBase64EncodedSize(32);
 			// соль лицензии
 			char* salt = static_cast<char*>(malloc(
 				static_cast<size_t>(sizeof(char) * static_cast<size_t>(saltLengthInBase64) + 1)));
@@ -445,14 +445,14 @@ namespace lickey
 			{
 				boost::scoped_array<char> scopedSaltImpl(salt);
 				dataSection.read(salt, static_cast<int>(sizeof(char)) * saltLengthInBase64);
-				auto it = static_cast<size_t>(saltLengthInBase64); //memsize
+				const auto it = static_cast<size_t>(saltLengthInBase64); //memsize
 				salt[it] = '\0';
 				// "точная" соль лицензии
 				license.explicitSalt = salt;
 			}
 
 			// оставшееся количество символов в лицензии
-			int remainLen = decodedSize - saltLengthInBase64 - static_cast<int>(sizeof(unsigned int));
+			const int remainLen = decodedSize - saltLengthInBase64 - static_cast<int>(sizeof(unsigned int));
 
 			if (1 > remainLen)
 			{
@@ -472,7 +472,7 @@ namespace lickey
 			{
 				boost::scoped_array<char> scpdBase64Encrypted(base64Encrypted);
 				dataSection.read(base64Encrypted, static_cast<int>(sizeof(char)) * remainLen);
-				auto it = static_cast<size_t>(remainLen); //memsize
+				const auto it = static_cast<size_t>(remainLen); //memsize
 				base64Encrypted[it] = '\0';
 				int decodedSize2 = 0;
 				unsigned char* decoded2 = nullptr; // буфер под дешифрованную лицензию
