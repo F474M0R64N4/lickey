@@ -364,12 +364,8 @@ namespace
 
 namespace lickey
 {
-	LicenseManager::LicenseManager(
-		std::string vn,
-		std::string an)
-		: vendorName(std::move(vn))
-		  , appName(std::move(an))
-		  , isLicenseLoaded(false)
+	LicenseManager::LicenseManager(std::string vn, std::string an) : vendorName(std::move(vn)), appName(std::move(an)),
+	                                                                 isLicenseLoaded(false)
 	{
 		InitializeOpenSSL();
 	}
