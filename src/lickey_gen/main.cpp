@@ -36,21 +36,20 @@ namespace
         LicenseManager& licMgr)
     {
         Date expire;
-        if(!::Load(expire, expireDate))
+        if(Load(expire, expireDate))
         {
-            std::cout << "invalid expire date = " << expireDate << "\n";
-            return false;
+	        FeatureVersion version;
+	        version = featureVersion;
+	        licMgr.Add(featureName, version, issue, expire, numLics, lic);
+	        std::cout << "done to add feature = " << featureName << "\n";
+	        std::cout << "  version = " << featureVersion << "\n";
+	        std::cout << "  issue date = " << ToString(issue) << "\n";
+	        std::cout << "  expire date = " << expireDate << "\n";
+	        std::cout << "  num licenses = " << numLics << "\n";
+	        return true;
         }
-
-        FeatureVersion version;
-        version = featureVersion;
-        licMgr.Add(featureName, version, issue, expire, numLics, lic);
-        std::cout << "done to add feature = " << featureName << "\n";
-        std::cout << "  version = " << featureVersion << "\n";
-        std::cout << "  issue date = " << ToString(issue) << "\n";
-        std::cout << "  expire date = " << expireDate << "\n";
-        std::cout << "  num licenses = " << numLics << "\n";
-        return true;
+        std::cout << "invalid expire date = " << expireDate << "\n";
+        return false;
     }
 }
 
@@ -108,12 +107,9 @@ int main(int argc, char* argv[])
                 break;
             }
             Date tmp;
-            if(!Load(tmp, expireDate))
-            {
-                std::cout << "invalid date format\n";
-                continue;
-            }
-            break;
+            if(Load(tmp, expireDate))
+	            break;
+            std::cout << "invalid date format\n";
         } while(true);
 
         unsigned int numLics = 0;
@@ -129,10 +125,9 @@ int main(int argc, char* argv[])
             break;
         } while(true);
 
-        if(!AddFeature(feature, featureVersion, issue, expireDate, numLics, lic, licMgr))
-        {
-            std::cout << "fail to add new feature\n";
-        }
+        if(AddFeature(feature, featureVersion, issue, expireDate, numLics, lic, licMgr))
+	        continue;
+        std::cout << "fail to add new feature\n";
     } while(true);
 
     if(lic.FeatureMap().empty())
@@ -160,15 +155,12 @@ int main(int argc, char* argv[])
         std::stringstream filepathImpl;
         filepathImpl << baseFilepath << "(" << hardwareKey << ")" << extension;
 
-        if(!licMgr.Save(filepathImpl.str(), HardwareKey(hardwareKey), lic))
+        if(licMgr.Save(filepathImpl.str(), HardwareKey(hardwareKey), lic))
         {
-            std::cout << "fail to save into = " << filepathImpl.str() << "\n";
+	        std::cout << "done to save into = " << filepathImpl.str() << "\n";
+	        break;
         }
-        else
-        {
-            std::cout << "done to save into = " << filepathImpl.str() << "\n";
-            break;
-        }
+        std::cout << "fail to save into = " << filepathImpl.str() << "\n";
     } while(true);
 
     std::cout << "please press any key\n";
