@@ -330,7 +330,7 @@ namespace
 	}
 
 
-	bool EncryptData(EL& el, std::string& encrypted)
+	bool EncryptData(const EL& el, std::string& encrypted)
 	{
 		unsigned char encryptionKey[16];
 
