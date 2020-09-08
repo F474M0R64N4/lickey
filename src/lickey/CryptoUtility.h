@@ -10,9 +10,15 @@ namespace lickey {
     const unsigned char *key,
     const unsigned char *iv,
     unsigned char *dest,
-    // const size_t destlen);
     size_t &destlen) -> bool;
 
+  auto Encrypt_(
+    const char *data,
+    size_t datalen,
+    const unsigned char *key,
+    const unsigned char *iv,
+    unsigned char *dest,
+    size_t &destlen) -> bool;
 
   auto Decrypt(
     const unsigned char *data,
@@ -20,7 +26,6 @@ namespace lickey {
     const unsigned char *key,
     const unsigned char *iv,
     unsigned char *dest,
-    // const size_t destlen);
     size_t &destlen) -> bool;
 
 

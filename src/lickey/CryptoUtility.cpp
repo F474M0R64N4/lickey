@@ -6,6 +6,12 @@
 #include <openssl/rand.h>
 #include <openssl/buffer.h>
 #include <algorithm>
+
+#include "mbedcrypto/hash.hpp"
+#include "mbedcrypto/tcodec.hpp"
+#include "mbedcrypto/cipher.hpp"
+#include "mbedcrypto/rnd_generator.hpp"
+
 // to remove warning C4996 for fopen() in openssl/applink.c
 #ifdef _WIN32
   #ifdef WIN32
@@ -39,6 +45,20 @@ namespace lickey {
 
 
   bool Encrypt(const char *data, const size_t datalen, const unsigned char *key, const unsigned char *iv,
+    unsigned char *dest, size_t &destlen) {
+    EVP_CIPHER_CTX en;
+    int f_len = 0;
+    int c_len = static_cast<int>(destlen);
+    memset(dest, 0x00, destlen);
+    EVP_CIPHER_CTX_init(&en);
+    EVP_EncryptInit_ex(&en, EVP_aes_256_cbc(), nullptr, key, iv);
+    EVP_EncryptUpdate(&en, dest, static_cast<int *>(&c_len), (unsigned char *)data, static_cast<int>(datalen));
+    EVP_EncryptFinal_ex(&en, static_cast<unsigned char *>(dest + static_cast<unsigned char>(c_len)), &f_len);
+    EVP_CIPHER_CTX_cleanup(&en);
+    destlen = static_cast<size_t>(c_len) + static_cast<size_t>(f_len);
+    return true;
+  }
+  bool Encrypt_(const char *data, const size_t datalen, const unsigned char *key, const unsigned char *iv,
     unsigned char *dest, size_t &destlen) {
     EVP_CIPHER_CTX en;
     int f_len = 0;
@@ -185,4 +205,5 @@ namespace lickey {
     salt = encoded;
     return true;
   }
+
 }
