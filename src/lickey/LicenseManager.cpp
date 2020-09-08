@@ -167,17 +167,17 @@ namespace {
     return doesDataExist; // возвратим флаг
   }
 
-
   auto MakeEncryptionKey(
     const HardwareKey &key,
     const std::string &vendorName,
     const std::string &appName,
     const Hash &firstFeatureSign,
     const Salt &explicitSalt,
-    unsigned char encryptionKey[16]) -> bool {
+    std::string &encryptionKey) -> bool {
     std::stringstream src;
     src << key.Value() << explicitSalt.Value() << vendorName << appName << firstFeatureSign.Value();
-    MD5(src.str().c_str(), src.str().size(), encryptionKey);
+    //MD5(src.str().c_str(), src.str().size(), encryptionKey);
+    MD5_(src.str(), src.str().size(), encryptionKey);
     return true;
   }
 
@@ -185,13 +185,14 @@ namespace {
   auto MakeEncryptionIv(
     const HardwareKey &key,
     const Salt &explicitSalt,
-    const unsigned char encryptionKey[16],
-    unsigned char encryptionIv[16]) -> bool {
+    std::string &encryptionKey,
+    std::string &encryptionIv) -> bool {
     std::string encodedKey;
-    EncodeBase64(encryptionKey, 16, encodedKey);
+    EncodeBase64(encryptionKey, encodedKey);
     std::stringstream src;
     src << encodedKey << key.Value() << explicitSalt.Value();
-    MD5(src.str().c_str(), src.str().size(), encryptionIv);
+    //MD5(src.str().c_str(), src.str().size(), encryptionIv);
+    MD5_(src.str(), src.str().size(), encryptionIv);
     return true;
   }
 
@@ -204,10 +205,10 @@ namespace {
     std::stringstream src;
     src << featureName << featureInfo.Version().Value() << ToString(featureInfo.IssueDate()) <<
       ToString(featureInfo.ExpireDate()) << featureInfo.NumLics() << implicitSalt.Value();
-    unsigned char sha[32];
-    SHA256(src.str().c_str(), src.str().size(), sha);
+    std::string sha;
+    SHA256_(src.str(), src.str().size(), sha);
     std::string encodedSign;
-    EncodeBase64(sha, 32, encodedSign);
+    EncodeBase64(sha, encodedSign);
     sign = encodedSign;
     return true;
   }
@@ -217,11 +218,11 @@ namespace {
     const DL &dl,
     Salt &implicitSalt,
     Date &lastUsedDate,
-    unsigned char *data,
+    std::string data,
     size_t datalen
   ) -> bool {
     // буфер для ключа расшифровки
-    unsigned char encryptionKey[16];
+    std::string encryptionKey;
 
     // создадим ключ расшифровки
     if (!MakeEncryptionKey(dl.key, dl.vendorName, dl.appName, dl.firstFeatureSign, dl.explicitSalt, encryptionKey)) {
@@ -230,7 +231,7 @@ namespace {
     }
 
     // буфер для ключа инициализации
-    unsigned char encryptionIv[16];
+    std::string encryptionIv;
 
     // создадим ключ инициализации
     if (!MakeEncryptionIv(dl.key, dl.explicitSalt, encryptionKey, encryptionIv)) {
@@ -239,14 +240,16 @@ namespace {
     }
 
     // буфер для расшифрованных данных
-    unsigned char decryptedImpl[BUF_SIZE] = {'\0'};
+    //unsigned char decryptedImpl[BUF_SIZE] = {'\0'};
+    std::string decryptedImpl;
     //размер расшифрованных данных
     size_t decryptedImplSize = BUF_SIZE;
     // расшифровываем данные
-    Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
+    // Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
+    Decrypt_(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
     char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
     boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
-    std::transform(decryptedImpl, decryptedImpl + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
+    std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
     std::istringstream src(decryptedImplChar, std::ios::binary);
     const int validLen = CalcBase64EncodedSize(32) + 8;
 
@@ -294,14 +297,14 @@ namespace {
 
 
   auto EncryptData(const EL &el, std::string &encrypted) -> bool {
-    unsigned char encryptionKey[16];
+    std::string encryptionKey;
 
     if (!MakeEncryptionKey(el.key, el.vendorName, el.appName, el.firstFeatureSign, el.explicitSalt, encryptionKey)) {
       LOG(error) << "fail to get key";
       return false;
     }
 
-    unsigned char encryptionIv[16];
+    std::string encryptionIv;
 
     if (!MakeEncryptionIv(el.key, el.explicitSalt, encryptionKey, encryptionIv)) {
       LOG(error) << "fail to get iv";
@@ -313,10 +316,15 @@ namespace {
     std::ostringstream dst(std::ios::binary);
     dst.write(el.implicitSalt.Value().c_str(), sizeof(char) * el.implicitSalt.Value().size());
     dst.write(strDate.c_str(), sizeof(char) * strDate.size());
-    unsigned char ecryptedImpl[BUF_SIZE] = {'\0'};
+    std::string ecryptedImpl;
     size_t ecryptedImplSize = BUF_SIZE;
-    Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
-    EncodeBase64(ecryptedImpl, static_cast<int>(ecryptedImplSize), encrypted);
+    //Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
+    /////////////
+    std::string encryptionKey_(encryptionKey);
+    std::string encryptionIv_(encryptionIv);
+    Encrypt_(dst.str(), dst.str().size(), encryptionKey_, encryptionIv_, ecryptedImpl, ecryptedImplSize);
+    /////////////
+    EncodeBase64(ecryptedImpl, encrypted);
     return true;
   }
 }
@@ -325,7 +333,6 @@ namespace {
 namespace lickey {
   LicenseManager::LicenseManager(std::string vn, std::string an) : vendorName(std::move(vn)), appName(std::move(an)),
     isLicenseLoaded(false) {
-    InitializeOpenSSL();
   }
 
 
@@ -335,7 +342,7 @@ namespace lickey {
 
 
   auto LicenseManager::isLicenseDecrypt(const HardwareKey &key, License &license, int decodedSize2,
-    unsigned char *decoded2) -> bool {
+    std::string &decoded2) -> bool {
     DL decrypt_license; // структура дешифрованной лицензии
     decrypt_license.key = key;
     decrypt_license.vendorName = vendorName;
@@ -370,17 +377,15 @@ namespace lickey {
 
     if (FindDataSection(lines, data)) {
       int decodedSize = 0;
-      unsigned char *decoded = nullptr; // дешифрованная лицензия
-      DecodeBase64(data, decoded, decodedSize);
-      boost::scoped_array<unsigned char> scopedDecoded(decoded);
-
-      if (36 > decodedSize) {
-        LOG(error) << "no information in data section";
-        return false;
-      }
-
+      std::string decoded; // дешифрованная лицензия
+      DecodeBase64_(data, decoded, decodedSize);
+      // boost::scoped_array<unsigned char> scopedDecoded(decoded.c_str());
+      /*   if (36 > decodedSize) {
+           LOG(error) << "no information in data section";
+           return false;
+         }*/
       std::string dataBuffer(decodedSize, '\0');
-      std::transform(decoded, decoded + static_cast<unsigned char>(decodedSize), dataBuffer.begin(), IntoChar);
+      std::transform(decoded.c_str(), decoded.c_str() + static_cast<unsigned char>(decodedSize), dataBuffer.begin(), IntoChar);
       std::istringstream dataSection(dataBuffer, std::ios::binary);
       dataSection.read(static_cast<char *>(&license.fileVersion), sizeof(unsigned int));
       const int saltLengthInBase64 = CalcBase64EncodedSize(32);
@@ -421,9 +426,9 @@ namespace lickey {
         const auto it = static_cast<size_t>(remainLen); //memsize
         base64Encrypted[it] = '\0';
         int decodedSize2 = 0;
-        unsigned char *decoded2 = nullptr; // буфер под дешифрованную лицензию
-        DecodeBase64(base64Encrypted, decoded2, decodedSize2); // дешифруем лицензию из base64 формата
-        boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
+        std::string decoded2; // буфер под дешифрованную лицензию
+        DecodeBase64_((std::string)base64Encrypted, decoded2, decodedSize2); // дешифруем лицензию из base64 формата
+        //boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
         return isLicenseDecrypt(key, license, decodedSize2, decoded2); // дешифруем лицензию
       }
 

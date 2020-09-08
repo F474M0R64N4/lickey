@@ -21,7 +21,7 @@ namespace lickey {
 
     auto Load(const std::string &filepath, const HardwareKey &key, License &license) -> bool;
     auto isLicenseDecrypt(const HardwareKey &key, License &license, int decodedSize2,
-      unsigned char *decoded2) -> bool;
+      std::string &decoded2) -> bool;
     auto isLicenseDataSectionRead(const HardwareKey &key, License &license,
       const std::vector<std::string> &lines) -> bool;
     auto isLicenseRead(const std::string &filepath, const HardwareKey &key, License &license) -> bool;

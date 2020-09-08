@@ -110,13 +110,14 @@
       <AdditionalIncludeDirectories>..\third_party\openssl-1.0.2l\$(PlatformName)\include;$(BOOST_ROOT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
       <AdditionalDependencies>mbedcrypto.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\third_party\openssl-1.0.2l\$(PlatformName)\lib;$(BOOST_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\WORK\Desktop\mbedcrypto\build\src\Debug;..\third_party\openssl-1.0.2l\$(PlatformName)\lib;$(BOOST_LIB);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
