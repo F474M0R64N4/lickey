@@ -1,25 +1,22 @@
 #pragma once
 
-namespace lickey
-{
-	class FeatureVersion
-	{
-		friend class LicenseManager;
+namespace lickey {
+  class FeatureVersion {
+    friend class LicenseManager;
 
-	public:
-		FeatureVersion();
-		FeatureVersion(const FeatureVersion& obj);
-		virtual ~FeatureVersion();
+   public:
+    FeatureVersion();
+    FeatureVersion(const FeatureVersion &obj);
+    virtual ~FeatureVersion();
 
-		auto operator=(const FeatureVersion& obj) -> FeatureVersion&;
-		auto operator=(const std::string& v) -> FeatureVersion&;
+    auto operator=(const FeatureVersion &obj) -> FeatureVersion&;
+    auto operator=(const std::string &v) -> FeatureVersion&;
 
-		auto Value() const -> const std::string&
-		{
-			return version;
-		}
+    auto Value() const -> const std::string & {
+      return version;
+    }
 
-	private:
-		std::string version;
-	};
+   private:
+    std::string version;
+  };
 }

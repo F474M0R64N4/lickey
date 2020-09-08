@@ -1,27 +1,24 @@
 #pragma once
 
-namespace lickey
-{
-	class HardwareKey final
-	{
-		friend class HardwareKeyGetter;
+namespace lickey {
+  class HardwareKey final {
+    friend class HardwareKeyGetter;
 
-	public:
-		HardwareKey();
-		HardwareKey(const HardwareKey& obj);
-		explicit HardwareKey(const std::string& obj);
-		~HardwareKey();
-		auto operator=(const HardwareKey& obj) -> HardwareKey&;
-		auto operator=(const std::string& obj) -> HardwareKey&;
+   public:
+    HardwareKey();
+    HardwareKey(const HardwareKey &obj);
+    explicit HardwareKey(const std::string &obj);
+    ~HardwareKey();
+    auto operator=(const HardwareKey &obj) -> HardwareKey&;
+    auto operator=(const std::string &obj) -> HardwareKey&;
 
-		auto Value() const -> std::string
-		{
-			return key;
-		}
+    auto Value() const -> std::string {
+      return key;
+    }
 
-	private:
-		std::string key;
-	};
+   private:
+    std::string key;
+  };
 
-	using HardwareKeys = std::vector<HardwareKey>;
+  using HardwareKeys = std::vector<HardwareKey>;
 }
