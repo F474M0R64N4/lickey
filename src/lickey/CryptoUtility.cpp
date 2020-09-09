@@ -10,7 +10,7 @@ using namespace std;
 
 namespace lickey
 {
-	auto Encrypt(const std::string& data, const size_t datalen, std::string key, const std::string& iv, std::string& dest,
+	auto Encrypt(const std::string& data, std::string key, const std::string& iv, std::string& dest,
 	             size_t& destlen) -> bool
 	{
 		const auto ciphered_buffer = cipher::encrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
@@ -18,7 +18,7 @@ namespace lickey
 		return true;
 	}
 
-	auto Decrypt(const std::string& data, const size_t datalen, std::string key, const std::string& iv, std::string& dest,
+	auto Decrypt(const std::string& data, std::string key, const std::string& iv, std::string& dest,
 	             size_t& destlen) -> bool
 	{
 		const auto decrypted_buffer = cipher::decrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
@@ -33,7 +33,7 @@ namespace lickey
 		return true;
 	}
 
-	auto SHA256(std::string& data, size_t datalen, std::string& hash) -> bool
+	auto SHA256(std::string& data, std::string& hash) -> bool
 	{
 		hash = make_hash(hash_t::sha256, data);
 		return false;

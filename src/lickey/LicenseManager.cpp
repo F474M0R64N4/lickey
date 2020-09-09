@@ -206,7 +206,7 @@ namespace {
     src << featureName << featureInfo.Version().Value() << ToString(featureInfo.IssueDate()) <<
       ToString(featureInfo.ExpireDate()) << featureInfo.NumLics() << implicitSalt.Value();
     std::string sha;
-    SHA256(src.str(), src.str().size(), sha);
+    SHA256(src.str(), sha);
     std::string encodedSign;
     EncodeBase64(sha, encodedSign);
     sign = encodedSign;
@@ -246,7 +246,7 @@ namespace {
     size_t decryptedImplSize = BUF_SIZE;
     // расшифровываем данные
     // Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
-    Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
+    Decrypt(data, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
     //char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
     //boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
     //std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
@@ -319,7 +319,7 @@ namespace {
     std::string ecryptedImpl;
     size_t ecryptedImplSize = BUF_SIZE;
     //Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
-    Encrypt(dst.str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
+    Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
     /////////////
     EncodeBase64(ecryptedImpl, encrypted);
     return true;
