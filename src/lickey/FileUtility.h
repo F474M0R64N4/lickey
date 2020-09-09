@@ -1,12 +1,6 @@
 #pragma once
 
 namespace lickey {
-  /**
-  * return base file path that does not include extension ("." is not included also).
-  * if input file path does not include extension, return same value as input file path.
-  * @param filePath [i] input file path to extract base file path
-  * @param std::string [o] base file path that does not include extension
-  */
   auto GetExtension(const std::string &filepath) -> std::string;
   auto GetBaseFilePath(const std::string &filepath) -> std::string;
   auto GetFilename(const std::string &filepath) -> std::string;

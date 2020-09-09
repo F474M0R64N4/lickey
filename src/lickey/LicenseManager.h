@@ -10,7 +10,6 @@ namespace lickey {
   class LicenseManager {
     std::string vendorName;
     std::string appName;
-
     std::string licenseFilepath;
     bool isLicenseLoaded;
     License loadedLicense;
@@ -20,10 +19,8 @@ namespace lickey {
     virtual ~LicenseManager();
 
     auto Load(const std::string &filepath, const HardwareKey &key, License &license) -> bool;
-    auto isLicenseDecrypt(const HardwareKey &key, License &license, int decodedSize2,
-      std::string &decoded2) -> bool;
-    auto isLicenseDataSectionRead(const HardwareKey &key, License &license,
-      const std::vector<std::string> &lines) -> bool;
+    auto isLicenseDecrypt(const HardwareKey &key, License &license, int decodedSize2, std::string &decoded2) -> bool;
+    auto isLicenseDataSectionRead(const HardwareKey &key, License &license, const std::vector<std::string> &lines) -> bool;
     auto isLicenseRead(const std::string &filepath, const HardwareKey &key, License &license) -> bool;
 
     auto Update() -> bool;

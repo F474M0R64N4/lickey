@@ -10,6 +10,7 @@ namespace lickey {
    public:
     FeatureInfo();
     virtual ~FeatureInfo();
+  	
     auto IsValid() const -> bool;
     auto IsExpired() const -> bool;
 
