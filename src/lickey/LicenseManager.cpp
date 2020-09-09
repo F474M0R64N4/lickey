@@ -177,7 +177,7 @@ namespace {
     std::string src;
     src.append(key.Value()).append(explicitSalt.Value()).append(vendorName).append(appName).append(firstFeatureSign.Value());
     //MD5(src.str().c_str(), src.str().size(), encryptionKey);
-    MD5(src, /*src.length(),*/ encryptionKey);
+    MD5(src, encryptionKey);
     return true;
   }
 
@@ -192,7 +192,7 @@ namespace {
     std::string src;
     src.append(encodedKey).append(key.Value()).append(explicitSalt.Value());
     //MD5(src.str().c_str(), src.str().size(), encryptionIv);
-    MD5(src, /*src.length(),*/ encryptionIv);
+    MD5(src, encryptionIv);
     return true;
   }
 

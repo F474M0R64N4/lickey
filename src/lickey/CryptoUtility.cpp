@@ -26,10 +26,9 @@ namespace lickey
 		return true;
 	}
 
-	auto MD5(const std::string& data, /*size_t datalen,*/ std::string& hash) -> bool
+	auto MD5(const std::string& data, std::string& hash) -> bool
 	{
 		hash = make_hash(hash_t::md5, data);
-//		datalen = data.length();
 		return true;
 	}
 
