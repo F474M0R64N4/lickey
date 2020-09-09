@@ -22,4 +22,6 @@ int main()
 	{
 		std::cout << "license is valid\n";
 	}
+
+	getchar();
 }
