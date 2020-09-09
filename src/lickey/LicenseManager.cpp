@@ -247,11 +247,11 @@ namespace {
     // расшифровываем данные
     // Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
     Decrypt_(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
-    char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
-    boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
-    std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
-    std::istringstream src(decryptedImplChar, std::ios::binary);
-    const int validLen = CalcBase64EncodedSize(32) + 8;
+    //char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
+    //boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
+    //std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
+    std::istringstream src(decryptedImpl, std::ios::binary);
+    const int validLen = CalcBase64EncodedSize(4) + 8;
 
     if (static_cast<size_t>(validLen) > decryptedImplSize) {
       LOG(error) << "invalid data section";
@@ -260,15 +260,15 @@ namespace {
 
     // соль
     char *saltImpl = static_cast<char *>(malloc(
-          static_cast<size_t>(sizeof(char) * static_cast<size_t>(CalcBase64EncodedSize(32)) + 1)));
+          static_cast<size_t>(sizeof(char) * static_cast<size_t>(CalcBase64EncodedSize(4)) + 1)));
 
     if (saltImpl == nullptr) {
       assert(saltImpl);
 
     } else {
       boost::scoped_array<char> scopedSaltImpl(saltImpl);
-      src.read(saltImpl, static_cast<int>(sizeof(char)) * CalcBase64EncodedSize(32));
-      const auto it = static_cast<size_t>(CalcBase64EncodedSize(32)); //memsize
+      src.read(saltImpl, static_cast<int>(sizeof(char)) * CalcBase64EncodedSize(4));
+      const auto it = static_cast<size_t>(CalcBase64EncodedSize(4)); //memsize
       saltImpl[it] = '\0';
       implicitSalt = saltImpl;
     }
@@ -385,7 +385,7 @@ namespace lickey {
       std::transform(decoded.c_str(), decoded.c_str() + static_cast<unsigned char>(decodedSize), dataBuffer.begin(), IntoChar);
       std::istringstream dataSection(dataBuffer, std::ios::binary);
       dataSection.read(static_cast<char *>(&license.fileVersion), sizeof(unsigned int));
-      const int saltLengthInBase64 = CalcBase64EncodedSize(32);
+      const int saltLengthInBase64 = CalcBase64EncodedSize(4);
       // соль лицензии
       char *salt = static_cast<char *>(malloc(
             static_cast<size_t>(sizeof(char) * static_cast<size_t>(saltLengthInBase64) + 1)));

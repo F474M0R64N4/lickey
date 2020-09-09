@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "CryptoUtility.h"
-#include <openssl/evp.h>
-#include <openssl/md5.h>
-#include <openssl/sha.h>
-#include <openssl/rand.h>
-#include <openssl/buffer.h>
+
 #include <algorithm>
 
 #include "mbedcrypto/hash.hpp"
@@ -12,25 +8,7 @@
 #include "mbedcrypto/cipher.hpp"
 #include "mbedcrypto/rnd_generator.hpp"
 
-// to remove warning C4996 for fopen() in openssl/applink.c
-#ifdef _WIN32
-  #ifdef WIN32
-    #define WIN32_PREDEFINED
-  #else
-    #define WIN32
-  #endif
-  #pragma warning(push)
-  #pragma warning(disable: 4996)
-#endif
-//#include <openssl/applink.c>
-#ifdef WIN32
-  #ifdef WIN32_PREDEFINED
-    #undef WIN32_PREDEFINED
-  #else
-    #undef WIN32
-  #endif
-  #pragma warning(pop)
-#endif
+#include <boost/range/algorithm/count.hpp>
 
 using namespace mbedcrypto;
 using namespace std;
@@ -56,6 +34,7 @@ namespace lickey {
     size_t datalen,
     std::string &hash) {
     hash = make_hash(hash_t::md5, data);
+    datalen = data.length();
     return true;
   }
 
@@ -78,6 +57,7 @@ namespace lickey {
     std::string &data,
     int &datalen) {
     data = base64::decode(str);
+    datalen = str.length();
   }
 
 
