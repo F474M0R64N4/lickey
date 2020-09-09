@@ -26,7 +26,7 @@ namespace lickey
 		return true;
 	}
 
-	auto MD5(std::string data, size_t datalen, std::string& hash) -> bool
+	auto MD5(const std::string& data, size_t datalen, std::string& hash) -> bool
 	{
 		hash = make_hash(hash_t::md5, data);
 		datalen = data.length();
@@ -47,7 +47,7 @@ namespace lickey
 	auto DecodeBase64(std::string& str, std::string& data, int& datalen) -> void
 	{
 		data = base64::decode(str);
-		datalen = str.length();
+		datalen = static_cast<int>(str.length());
 	}
 
 
