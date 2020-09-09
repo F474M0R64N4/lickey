@@ -1,30 +1,24 @@
 #include <iostream>
 
 #include "LicenseManager.h"
-#include "HardwareKey.h"
 #include "HardwareKeyGetter.h"
 #include "License.h"
 
 int main()
 {
-	lickey::HardwareKeyGetter keyGetter;
-	lickey::HardwareKeys keys = keyGetter();
+	lickey::HardwareKeyGetter key_getter;
+	auto keys = key_getter();
 
-	if (keys.empty())
-	{
-		//return 0;
-	}
+	lickey::LicenseManager license_manager("v", "a");
+	lickey::License license;
+	license_manager.Load(R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\werds(84-16-F9-F5-79-9F))", keys.front(), license);
 
-	lickey::LicenseManager licMgr("v", "a");
-	lickey::License lic;
-	licMgr.Load(R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\werds(84-16-F9-F5-79-9F))", keys.front(), lic);
-
-	if (lic.FeatureMap().IsExpired("full") == false)
+	if (license.FeatureMap().IsExpired("full") == false)
 	{
 		std::cout << "the license is not expired\n";
 	}
 	
-	if (lic.FeatureMap().IsValid("full") == true)
+	if (license.FeatureMap().IsValid("full") == true)
 	{
 		std::cout << "license is valid\n";
 	}
