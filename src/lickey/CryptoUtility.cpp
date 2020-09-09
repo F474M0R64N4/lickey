@@ -52,14 +52,10 @@ namespace lickey
 
 	auto MakeSalt(Salt& salt) -> bool
 	{
-		std::string tmp;
 		std::string encoded;
 
 		// TODO: salt
-		//if (tmp.empty())
-		//{
-		tmp = "salt";
-		//}
+		std::string tmp = "salt";
 
 		EncodeBase64(tmp, encoded);
 		salt = encoded;
