@@ -50,7 +50,6 @@ namespace lickey
 		datalen = static_cast<int>(str.length());
 	}
 
-
 	auto MakeSalt(Salt& salt) -> bool
 	{
 		std::string tmp;
