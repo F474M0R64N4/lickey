@@ -1,6 +1,7 @@
 #pragma once
 #include "Date.h"
 #include "License.h"
+#include <boost/static_string/static_string.hpp>
 
 namespace lickey {
   class HardwareKey;
@@ -19,7 +20,7 @@ namespace lickey {
     virtual ~LicenseManager();
 
     auto Load(const std::string &filepath, const HardwareKey &key, License &license) -> bool;
-    auto isLicenseDecrypt(const HardwareKey &key, License &license, int decodedSize2, std::string &decoded2) -> bool;
+    auto isLicenseDecrypt(const HardwareKey &key, License &license, int decoded_size, boost::static_string<65536> &decoded) -> bool;
     auto isLicenseDataSectionRead(const HardwareKey &key, License &license, const std::vector<std::string> &lines) -> bool;
     auto isLicenseRead(const std::string &filepath, const HardwareKey &key, License &license) -> bool;
 
