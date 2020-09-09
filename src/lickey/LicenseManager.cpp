@@ -174,10 +174,10 @@ namespace {
     const Hash &firstFeatureSign,
     const Salt &explicitSalt,
     std::string &encryptionKey) -> bool {
-    std::stringstream src;
-    src << key.Value() << explicitSalt.Value() << vendorName << appName << firstFeatureSign.Value();
+    std::string src;
+    src.append(key.Value()).append(explicitSalt.Value()).append(vendorName).append(appName).append(firstFeatureSign.Value());
     //MD5(src.str().c_str(), src.str().size(), encryptionKey);
-    MD5(src.str(), src.str().size(), encryptionKey);
+    MD5(src, src.length(), encryptionKey);
     return true;
   }
 
@@ -189,10 +189,10 @@ namespace {
     std::string &encryptionIv) -> bool {
     std::string encodedKey;
     EncodeBase64(encryptionKey, encodedKey);
-    std::stringstream src;
-    src << encodedKey << key.Value() << explicitSalt.Value();
+    std::string src;
+    src.append(encodedKey).append(key.Value()).append(explicitSalt.Value());
     //MD5(src.str().c_str(), src.str().size(), encryptionIv);
-    MD5(src.str(), src.str().size(), encryptionIv);
+    MD5(src, src.length(), encryptionIv);
     return true;
   }
 
