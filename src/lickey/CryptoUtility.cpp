@@ -10,7 +10,7 @@ using namespace std;
 
 namespace lickey
 {
-	auto Encrypt(const std::string& data, const size_t datalen, std::string key, std::string iv, std::string& dest,
+	auto Encrypt(const std::string& data, const size_t datalen, std::string key, const std::string& iv, std::string& dest,
 	             size_t& destlen) -> bool
 	{
 		const auto ciphered_buffer = cipher::encrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
@@ -18,7 +18,7 @@ namespace lickey
 		return true;
 	}
 
-	auto Decrypt(const std::string& data, const size_t datalen, std::string key, std::string iv, std::string& dest,
+	auto Decrypt(const std::string& data, const size_t datalen, std::string key, const std::string& iv, std::string& dest,
 	             size_t& destlen) -> bool
 	{
 		const auto decrypted_buffer = cipher::decrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
@@ -26,10 +26,10 @@ namespace lickey
 		return true;
 	}
 
-	auto MD5(const std::string& data, size_t datalen, std::string& hash) -> bool
+	auto MD5(const std::string& data, /*size_t datalen,*/ std::string& hash) -> bool
 	{
 		hash = make_hash(hash_t::md5, data);
-		datalen = data.length();
+//		datalen = data.length();
 		return true;
 	}
 
@@ -56,11 +56,11 @@ namespace lickey
 		std::string tmp;
 		std::string encoded;
 
-		// TODO: заглушка
-		if (tmp.empty())
-		{
-			tmp = "salt";
-		}
+		// TODO: salt
+		//if (tmp.empty())
+		//{
+		tmp = "salt";
+		//}
 
 		EncodeBase64(tmp, encoded);
 		salt = encoded;
