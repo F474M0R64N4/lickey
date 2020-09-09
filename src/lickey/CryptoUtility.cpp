@@ -15,21 +15,21 @@ using namespace std;
 
 namespace lickey {
 
-  bool Encrypt_(std::string data, const size_t datalen, std::string key, std::string iv,
+  bool Encrypt(std::string data, const size_t datalen, std::string key, std::string iv,
     std::string &dest, size_t &destlen) {
     const auto ciphered_buffer = cipher::encrypt(cipher_t::aes_128_cbc, padding_t::pkcs7, iv, key, data);
     dest = ciphered_buffer;
     return true;
   }
 
-  bool Decrypt_(std::string data, const size_t datalen, std::string key, std::string iv,
+  bool Decrypt(std::string data, const size_t datalen, std::string key, std::string iv,
     std::string &dest, size_t &destlen) {
     auto decrypted_buffer = cipher::decrypt(cipher_t::aes_128_cbc, padding_t::pkcs7, iv, key, data);
     dest = decrypted_buffer;
     return true;
   }
 
-  bool MD5_(
+  bool MD5(
     std::string data,
     size_t datalen,
     std::string &hash) {
@@ -38,7 +38,7 @@ namespace lickey {
     return true;
   }
 
-  bool SHA256_(
+  bool SHA256(
     std::string &data,
     size_t datalen,
     std::string &hash) {
@@ -52,7 +52,7 @@ namespace lickey {
     str = to_base64(data);
   }
 
-  void DecodeBase64_(
+  void DecodeBase64(
     std::string &str,
     std::string &data,
     int &datalen) {

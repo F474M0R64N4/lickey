@@ -2,22 +2,20 @@
 #include "Salt.h"
 
 namespace lickey {
-  void InitializeOpenSSL();
-
-  auto Encrypt_(
+  auto Encrypt(
     std::string data, const size_t datalen, std::string key, std::string iv,
     std::string &dest, size_t &destlen) -> bool;
 
-  auto Decrypt_(
+  auto Decrypt(
     std::string data, const size_t datalen, std::string key, std::string iv,
     std::string &dest, size_t &destlen) -> bool;
 
-  auto MD5_(
+  auto MD5(
     std::string data,
     size_t datalen,
     std::string &hash) -> bool;
 
-  auto SHA256_(
+  auto SHA256(
     std::string &data,
     size_t datalen,
     std::string &hash) -> bool;
@@ -26,7 +24,7 @@ namespace lickey {
     std::string &data,
     std::string &str) -> void;
 
-  auto DecodeBase64_(
+  auto DecodeBase64(
     std::string &str,
     std::string &data,
     int &datalen) -> void;

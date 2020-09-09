@@ -177,7 +177,7 @@ namespace {
     std::stringstream src;
     src << key.Value() << explicitSalt.Value() << vendorName << appName << firstFeatureSign.Value();
     //MD5(src.str().c_str(), src.str().size(), encryptionKey);
-    MD5_(src.str(), src.str().size(), encryptionKey);
+    MD5(src.str(), src.str().size(), encryptionKey);
     return true;
   }
 
@@ -192,7 +192,7 @@ namespace {
     std::stringstream src;
     src << encodedKey << key.Value() << explicitSalt.Value();
     //MD5(src.str().c_str(), src.str().size(), encryptionIv);
-    MD5_(src.str(), src.str().size(), encryptionIv);
+    MD5(src.str(), src.str().size(), encryptionIv);
     return true;
   }
 
@@ -206,7 +206,7 @@ namespace {
     src << featureName << featureInfo.Version().Value() << ToString(featureInfo.IssueDate()) <<
       ToString(featureInfo.ExpireDate()) << featureInfo.NumLics() << implicitSalt.Value();
     std::string sha;
-    SHA256_(src.str(), src.str().size(), sha);
+    SHA256(src.str(), src.str().size(), sha);
     std::string encodedSign;
     EncodeBase64(sha, encodedSign);
     sign = encodedSign;
@@ -246,7 +246,7 @@ namespace {
     size_t decryptedImplSize = BUF_SIZE;
     // расшифровываем данные
     // Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
-    Decrypt_(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
+    Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
     //char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
     //boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
     //std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
@@ -319,7 +319,7 @@ namespace {
     std::string ecryptedImpl;
     size_t ecryptedImplSize = BUF_SIZE;
     //Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
-    Encrypt_(dst.str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
+    Encrypt(dst.str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
     /////////////
     EncodeBase64(ecryptedImpl, encrypted);
     return true;
@@ -375,7 +375,7 @@ namespace lickey {
     if (FindDataSection(lines, data)) {
       int decodedSize = 0;
       std::string decoded; // дешифрованная лицензия
-      DecodeBase64_(data, decoded, decodedSize);
+      DecodeBase64(data, decoded, decodedSize);
       // boost::scoped_array<unsigned char> scopedDecoded(decoded.c_str());
       /*   if (36 > decodedSize) {
            LOG(error) << "no information in data section";
@@ -424,7 +424,7 @@ namespace lickey {
         base64Encrypted[it] = '\0';
         int decodedSize2 = 0;
         std::string decoded2; // буфер под дешифрованную лицензию
-        DecodeBase64_((std::string)base64Encrypted, decoded2, decodedSize2); // дешифруем лицензию из base64 формата
+        DecodeBase64((std::string)base64Encrypted, decoded2, decodedSize2); // дешифруем лицензию из base64 формата
         //boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
         return isLicenseDecrypt(key, license, decodedSize2, decoded2); // дешифруем лицензию
       }
