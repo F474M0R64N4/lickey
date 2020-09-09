@@ -537,7 +537,7 @@ namespace lickey {
       return false;
     }
 
-    LOG(error) << "fail to make data section"; // ошибка создания секции "data"
+   // LOG(error) << "fail to make data section"; // ошибка создания секции "data"
     return false;
   }
 
