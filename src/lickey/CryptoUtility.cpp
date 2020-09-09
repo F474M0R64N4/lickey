@@ -1,14 +1,9 @@
 #include "stdafx.h"
 #include "CryptoUtility.h"
 
-#include <algorithm>
-
 #include "mbedcrypto/hash.hpp"
 #include "mbedcrypto/tcodec.hpp"
 #include "mbedcrypto/cipher.hpp"
-#include "mbedcrypto/rnd_generator.hpp"
-
-#include <boost/range/algorithm/count.hpp>
 
 using namespace mbedcrypto;
 using namespace std;
