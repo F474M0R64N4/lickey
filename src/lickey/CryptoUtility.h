@@ -3,10 +3,10 @@
 
 namespace lickey
 {
-	auto Encrypt(std::string data, size_t datalen, std::string key, std::string iv, std::string& dest,
+	auto Encrypt(const std::string& data, size_t datalen, std::string key, std::string iv, std::string& dest,
 	             size_t& destlen) -> bool;
 
-	auto Decrypt(std::string data, size_t datalen, std::string key, std::string iv, std::string& dest,
+	auto Decrypt(const std::string& data, size_t datalen, std::string key, std::string iv, std::string& dest,
 	             size_t& destlen) -> bool;
 
 	auto MD5(std::string data, size_t datalen, std::string& hash) -> bool;
