@@ -38,15 +38,15 @@ using namespace std;
 namespace lickey {
 
   bool Encrypt_(std::string data, const size_t datalen, std::string key, std::string iv,
-    std::string dest, size_t &destlen) {
-    const auto ciphered_buffer = cipher::encrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key, data);
+    std::string &dest, size_t &destlen) {
+    const auto ciphered_buffer = cipher::encrypt(cipher_t::aes_128_cbc, padding_t::pkcs7, iv, key, data);
     dest = ciphered_buffer;
     return true;
   }
 
   bool Decrypt_(std::string data, const size_t datalen, std::string key, std::string iv,
-    std::string dest, size_t &destlen) {
-    auto decrypted_buffer = cipher::decrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key, data);
+    std::string &dest, size_t &destlen) {
+    auto decrypted_buffer = cipher::decrypt(cipher_t::aes_128_cbc, padding_t::pkcs7, iv, key, data);
     dest = decrypted_buffer;
     return true;
   }
@@ -84,6 +84,12 @@ namespace lickey {
   bool MakeSalt(Salt &salt) {
     std::string tmp;
     std::string encoded;
+
+    // TODO: заглушка
+    if (tmp.empty()) {
+      tmp = "salt";
+    }
+
     EncodeBase64(tmp, encoded);
     salt = encoded;
     return true;

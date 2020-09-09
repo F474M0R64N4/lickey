@@ -6,11 +6,11 @@ namespace lickey {
 
   auto Encrypt_(
     std::string data, const size_t datalen, std::string key, std::string iv,
-    std::string dest, size_t &destlen) -> bool;
+    std::string &dest, size_t &destlen) -> bool;
 
   auto Decrypt_(
     std::string data, const size_t datalen, std::string key, std::string iv,
-    std::string dest, size_t &destlen) -> bool;
+    std::string &dest, size_t &destlen) -> bool;
 
   auto MD5_(
     std::string data,

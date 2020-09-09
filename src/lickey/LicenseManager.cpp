@@ -319,10 +319,7 @@ namespace {
     std::string ecryptedImpl;
     size_t ecryptedImplSize = BUF_SIZE;
     //Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
-    /////////////
-    std::string encryptionKey_(encryptionKey);
-    std::string encryptionIv_(encryptionIv);
-    Encrypt_(dst.str(), dst.str().size(), encryptionKey_, encryptionIv_, ecryptedImpl, ecryptedImplSize);
+    Encrypt_(dst.str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
     /////////////
     EncodeBase64(ecryptedImpl, encrypted);
     return true;
