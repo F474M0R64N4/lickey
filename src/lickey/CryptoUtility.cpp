@@ -13,7 +13,7 @@ namespace lickey
 	bool Encrypt(std::string data, const size_t datalen, std::string key, std::string iv, std::string& dest,
 	             size_t& destlen)
 	{
-		const auto ciphered_buffer = cipher::encrypt(cipher_t::aes_128_cbc, padding_t::pkcs7, iv, key, data);
+		const auto ciphered_buffer = cipher::encrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
 		dest = ciphered_buffer;
 		return true;
 	}
@@ -21,7 +21,7 @@ namespace lickey
 	bool Decrypt(std::string data, const size_t datalen, std::string key, std::string iv, std::string& dest,
 	             size_t& destlen)
 	{
-		const auto decrypted_buffer = cipher::decrypt(cipher_t::aes_128_cbc, padding_t::pkcs7, iv, key, data);
+		const auto decrypted_buffer = cipher::decrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
 		dest = decrypted_buffer;
 		return true;
 	}
