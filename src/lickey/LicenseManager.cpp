@@ -264,13 +264,10 @@ namespace
 				// дата лицензии
 				const std::string date_impl = decryptedImpl.substr(8, 16);
 
-				if (!Load(lastUsedDate, date_impl))
-				{
-					LOG(error) << "fail to decrypt date because of invalid date";
-					return false;
-				}
-
-				return true;
+				if (Load(lastUsedDate, date_impl))
+					return true;
+				LOG(error) << "fail to decrypt date because of invalid date";
+				return false;
 			}
 			LOG(error) << "fail to get iv";
 			return false;
@@ -284,31 +281,29 @@ namespace
 	{
 		std::string encryptionKey;
 
-		if (!MakeEncryptionKey(el.key, el.vendorName, el.appName, el.firstFeatureSign, el.explicitSalt, encryptionKey))
+		if (MakeEncryptionKey(el.key, el.vendorName, el.appName, el.firstFeatureSign, el.explicitSalt, encryptionKey))
 		{
-			LOG(error) << "fail to get key";
-			return false;
-		}
+			std::string encryptionIv;
 
-		std::string encryptionIv;
-
-		if (!MakeEncryptionIv(el.key, el.explicitSalt, encryptionKey, encryptionIv))
-		{
+			if (MakeEncryptionIv(el.key, el.explicitSalt, encryptionKey, encryptionIv))
+			{
+				const std::string strDate = ToString(el.lastUsedDate);
+				assert(8 == strDate.size());
+				std::ostringstream dst(std::ios::binary);
+				dst.write(el.implicitSalt.Value().c_str(), sizeof(char) * el.implicitSalt.Value().size());
+				dst.write(strDate.c_str(), sizeof(char) * strDate.size());
+				std::string ecryptedImpl;
+				size_t ecryptedImplSize = BUF_SIZE;
+				Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
+				/////////////
+				EncodeBase64(ecryptedImpl, encrypted);
+				return true;
+			}
 			LOG(error) << "fail to get iv";
 			return false;
 		}
-
-		const std::string strDate = ToString(el.lastUsedDate);
-		assert(8 == strDate.size());
-		std::ostringstream dst(std::ios::binary);
-		dst.write(el.implicitSalt.Value().c_str(), sizeof(char) * el.implicitSalt.Value().size());
-		dst.write(strDate.c_str(), sizeof(char) * strDate.size());
-		std::string ecryptedImpl;
-		size_t ecryptedImplSize = BUF_SIZE;
-		Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
-		/////////////
-		EncodeBase64(ecryptedImpl, encrypted);
-		return true;
+		LOG(error) << "fail to get key";
+		return false;
 	}
 }
 
@@ -372,9 +367,9 @@ namespace lickey
 			DecodeBase64(data, decoded, decodedSize);
 			// boost::scoped_array<unsigned char> scopedDecoded(decoded.c_str());
 			/*   if (36 > decodedSize) {
-     LOG(error) << "no information in data section";
-     return false;
-   }*/
+LOG(error) << "no information in data section";
+return false;
+}*/
 			std::string dataBuffer(decodedSize, '\0');
 			std::transform(decoded.c_str(), decoded.c_str() + static_cast<unsigned char>(decodedSize),
 			               dataBuffer.begin(), IntoChar);
@@ -632,45 +627,43 @@ namespace lickey
 			return false;
 		}
 
-		if (!lickey::Load(featureInfo.issueDate, it->second))
+		if (lickey::Load(featureInfo.issueDate, it->second))
 		{
-			LOG(error) << "invalid issue date = " << it->second << " (name = " << featureName << ")\n";
-			return false;
-		}
+			it = featureTree.find("expire"); // конец даты лицензии
 
-		it = featureTree.find("expire"); // конец даты лицензии
+			if (featureTree.end() == it)
+			{
+				LOG(error) << "expire not found in feature line (name = " << featureName << ")\n";
+				return false;
+			}
 
-		if (featureTree.end() == it)
-		{
-			LOG(error) << "expire not found in feature line (name = " << featureName << ")\n";
-			return false;
-		}
+			if (lickey::Load(featureInfo.expireDate, it->second))
+			{
+				it = featureTree.find("num"); // количество выданных лицензий
 
-		if (!lickey::Load(featureInfo.expireDate, it->second))
-		{
+				if (featureTree.end() == it)
+				{
+					LOG(error) << "num not found in feature line (name = " << featureName << ")\n";
+					return false;
+				}
+
+				featureInfo.numLics = boost::lexical_cast<int>(it->second);
+				it = featureTree.find("sign"); // контрольная сумма лицензии
+
+				if (featureTree.end() == it)
+				{
+					LOG(error) << "sign not found in feature line (name = " << featureName << ")\n";
+					return false;
+				}
+
+				featureInfo.sign = it->second;
+				LOG(info) << "done to convert feature successfully (name = " << featureName << ")\n";
+				return true;
+			}
 			LOG(error) << "invalid expire date = " << it->second << " (name = " << featureName << ")\n";
 			return false;
 		}
-
-		it = featureTree.find("num"); // количество выданных лицензий
-
-		if (featureTree.end() == it)
-		{
-			LOG(error) << "num not found in feature line (name = " << featureName << ")\n";
-			return false;
-		}
-
-		featureInfo.numLics = boost::lexical_cast<int>(it->second);
-		it = featureTree.find("sign"); // контрольная сумма лицензии
-
-		if (featureTree.end() == it)
-		{
-			LOG(error) << "sign not found in feature line (name = " << featureName << ")\n";
-			return false;
-		}
-
-		featureInfo.sign = it->second;
-		LOG(info) << "done to convert feature successfully (name = " << featureName << ")\n";
-		return true;
+		LOG(error) << "invalid issue date = " << it->second << " (name = " << featureName << ")\n";
+		return false;
 	}
 }
