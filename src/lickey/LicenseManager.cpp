@@ -132,11 +132,8 @@ namespace {
       if (isDataDelimiter(line)) {
         isInData = !isInData;
 
-        if (!isInData) {
-          break;
-        }
-
-        continue;
+        if (isInData) continue;
+        break;
       }
 
       if (isInData) {
@@ -468,7 +465,7 @@ namespace lickey {
     if (EncryptData(encrypt_license, encrypted)) {
       std::ostringstream dataSection(std::ios::binary);
       char fileVersion = VERSION();
-      std::string explictSaltValue = loadedLicense.explicitSalt.Value();
+      const std::string explictSaltValue = loadedLicense.explicitSalt.Value();
       dataSection.write(static_cast<const char *>(&fileVersion), sizeof(unsigned int));
       dataSection.write(explictSaltValue.c_str(), sizeof(char) * explictSaltValue.size());
       dataSection.write(encrypted.c_str(), sizeof(char) * encrypted.size());

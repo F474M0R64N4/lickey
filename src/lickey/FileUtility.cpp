@@ -100,17 +100,18 @@ namespace lickey {
   bool ReadLines(const std::string &filepath, std::vector<std::string> &lines) {
     std::ifstream in(filepath.c_str());
 
-    if (!in) {
-      return false;
-    }
+    if (in)
+    {
+	    while (!in.eof())
+	    {
+		    std::string line;
+		    getline(in, line);
+		    lines.push_back(line);
+	    }
 
-    while (!in.eof()) {
-      std::string line;
-      getline(in, line);
-      lines.push_back(line);
+	    in.close();
+	    return true;
     }
-
-    in.close();
-    return true;
+    return false;
   }
 }
