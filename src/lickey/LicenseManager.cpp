@@ -205,11 +205,11 @@ namespace {
     const FeatureInfo &featureInfo,
     const Salt &implicitSalt,
     Hash &sign) -> bool {
-    std::stringstream src;
-    src << featureName << featureInfo.Version().Value() << ToString(featureInfo.IssueDate()) <<
-      ToString(featureInfo.ExpireDate()) << featureInfo.NumLics() << implicitSalt.Value();
+    std::string src;
+    src.append(featureName).append( featureInfo.Version().Value()).append(ToString(featureInfo.IssueDate())).append(
+      ToString(featureInfo.ExpireDate())).append( std::to_string(featureInfo.NumLics())).append(implicitSalt.Value());
     std::string sha;
-    SHA256(src.str(), sha);
+    SHA256(src, sha);
     std::string encodedSign;
     EncodeBase64(sha, encodedSign);
     sign = encodedSign;
