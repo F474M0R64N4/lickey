@@ -70,15 +70,18 @@ namespace {
 
 
   auto Convert(const std::string &featureName, const FeatureInfo &featureInfo) -> std::string {
-    std::stringstream converted;
-    converted << "feature "
-      << "name=" << featureName << " "
-      << "version=" << featureInfo.Version().Value() << " "
-      << "issue=" << ToString(featureInfo.IssueDate()) << " "
-      << "expire=" << ToString(featureInfo.ExpireDate()) << " "
-      << "num=" << featureInfo.NumLics() << " "
-      << "sign=" << featureInfo.Sign().Value();
-    return converted.str();
+  		std::string converted;
+		converted.append("feature ");
+		converted.append("name=").append(featureName).append(" ");
+		converted.append("version=").append(featureInfo.Version().Value()).append(" ");
+		converted.append("issue=").append(ToString(featureInfo.IssueDate())).append(" ");
+		converted.append("expire=").append(ToString(featureInfo.ExpireDate())).append(" ");
+		converted.append("num=");
+		converted.append(std::to_string(featureInfo.NumLics()));
+		converted.append(" ");
+		converted.append("sign=").append(featureInfo.Sign().Value());
+
+		return converted;
   }
 }
 
