@@ -332,10 +332,8 @@ namespace lickey
 		decrypt_license.firstFeatureSign = license.features.begin()->second.sign;
 		decrypt_license.explicitSalt = license.explicitSalt;
 
-		if (DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate,
-		                decoded,
-		                static_cast<const size_t>(decoded_size)
-		))
+		if (DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate, decoded,
+		                static_cast<const size_t>(decoded_size)))
 		{
 			// validate each feature
 			for (auto cit = license.features.begin(); cit != license.features.end(); ++cit)
