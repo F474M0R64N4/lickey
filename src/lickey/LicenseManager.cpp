@@ -28,25 +28,10 @@ namespace {
   };
 
   using DL = struct DecryptLicense {
-    /**
-     * \brief HWID
-     */
     HardwareKey key;
-    /**
-     * \brief Vendor
-     */
     std::string vendorName;
-    /**
-     * \brief Application Name
-     */
     std::string appName;
-    /**
-     * \brief First Feature checksum
-     */
     Hash firstFeatureSign;
-    /**
-     * \brief Explicit salt
-     */
     Salt explicitSalt;
   };
 
@@ -173,7 +158,6 @@ namespace {
     std::string &encryptionKey) -> bool {
     std::string src;
     src.append(key.Value()).append(explicitSalt.Value()).append(vendorName).append(appName).append(firstFeatureSign.Value());
-    //MD5(src.str().c_str(), src.str().size(), encryptionKey);
     MD5(src, encryptionKey);
     return true;
   }
@@ -242,7 +226,6 @@ namespace {
     //размер расшифрованных данных
     size_t decryptedImplSize = BUF_SIZE;
     // расшифровываем данные
-    // Decrypt(data, datalen, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
     Decrypt(data, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
     //char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
     //boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
@@ -315,7 +298,6 @@ namespace {
     dst.write(strDate.c_str(), sizeof(char) * strDate.size());
     std::string ecryptedImpl;
     size_t ecryptedImplSize = BUF_SIZE;
-    //Encrypt(dst.str().c_str(), dst.str().size(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
     Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
     /////////////
     EncodeBase64(ecryptedImpl, encrypted);
