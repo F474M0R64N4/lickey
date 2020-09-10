@@ -230,7 +230,6 @@ namespace {
     //char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
     //boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
     //std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
-    std::istringstream src(decryptedImpl, std::ios::binary);
     const int validLen = CalcBase64EncodedSize(4) + 8;
 
     if (static_cast<size_t>(validLen) > decryptedImplSize) {
@@ -238,41 +237,19 @@ namespace {
       return false;
     }
 
-    // соль
-    char *saltImpl = static_cast<char *>(malloc(
-          static_cast<size_t>(sizeof(char) * static_cast<size_t>(CalcBase64EncodedSize(4)) + 1)));
-
-    if (saltImpl == nullptr) {
-      assert(saltImpl);
-
-    } else {
-      boost::scoped_array<char> scopedSaltImpl(saltImpl);
-      src.read(saltImpl, static_cast<int>(sizeof(char)) * CalcBase64EncodedSize(4));
-      const auto it = static_cast<size_t>(CalcBase64EncodedSize(4)); //memsize
-      saltImpl[it] = '\0';
-      implicitSalt = saltImpl;
-    }
+      //boost::scoped_array<char> scopedSaltImpl(saltImpl);
+    const std::string salt_impl = decryptedImpl.substr(0, 8);
+    implicitSalt = salt_impl;
 
     // дата лицензии
-    char *dateImpl = static_cast<char *>(malloc(sizeof(char) * 8 + 1));
+    const std::string date_impl = decryptedImpl.substr(8, 16);
 
-    if (dateImpl == nullptr) {
-      assert(dateImpl);
-
-    } else {
-      boost::scoped_array<char> scopedDateImpl(dateImpl);
-      src.read(dateImpl, sizeof(char) * 8);
-      dateImpl[8] = '\0';
-
-      if (!Load(lastUsedDate, dateImpl)) {
+      if (!Load(lastUsedDate, date_impl)) {
         LOG(error) << "fail to decrypt date because of invalid date";
         return false;
       }
 
       return true;
-    }
-
-    return false;
   }
 
 
