@@ -341,8 +341,8 @@ namespace lickey {
   }
 
 
-  auto LicenseManager::isLicenseDecrypt(const HardwareKey &key, License &license, int decodedSize2,
-    std::string &decoded2) -> bool {
+  auto LicenseManager::isLicenseDecrypt(const HardwareKey &key, License &license, int decoded_size,
+    std::string &decoded) -> bool {
     DL decrypt_license; // структура дешифрованной лицензии
     decrypt_license.key = key;
     decrypt_license.vendorName = vendorName;
@@ -351,8 +351,8 @@ namespace lickey {
     decrypt_license.explicitSalt = license.explicitSalt;
 
     if (DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate,
-        decoded2,
-        static_cast<const size_t>(decodedSize2)
+        decoded,
+        static_cast<const size_t>(decoded_size)
       )) {
       // validate each feature
       for (auto cit = license.features.begin(); cit != license.features.end(); ++cit) {
@@ -425,11 +425,12 @@ namespace lickey {
         dataSection.read(base64Encrypted, static_cast<int>(sizeof(char)) * remainLen);
         const auto it = static_cast<size_t>(remainLen); //memsize
         base64Encrypted[it] = '\0';
-        int decodedSize2 = 0;
-        std::string decoded2; // буфер под дешифрованную лицензию
-        DecodeBase64((std::string)base64Encrypted, decoded2, decodedSize2); // дешифруем лицензию из base64 формата
-        //boost::scoped_array<unsigned char> scopedDecoded2(decoded2);
-        return isLicenseDecrypt(key, license, decodedSize2, decoded2); // дешифруем лицензию
+        int decoded_size = 0;
+        std::string decoded_; // буфер под дешифрованную лицензию
+      	std::string bse(base64Encrypted);
+        DecodeBase64(bse, decoded_, decoded_size); // дешифруем лицензию из base64 формата
+        //boost::scoped_array<unsigned char> scopedDecoded(decoded);
+        return isLicenseDecrypt(key, license, decoded_size, decoded_); // дешифруем лицензию
       }
 
       return false;
