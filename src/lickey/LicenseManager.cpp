@@ -50,12 +50,6 @@ namespace {
     Salt explicitSalt;
   };
 
-  struct UnsignedChar2Char {
-    auto operator()(unsigned char c) const -> char {
-      return static_cast<char>(c);
-    }
-  };
-
   auto IntoChar = [](unsigned char c) {
     return static_cast<char>(c);
   };
