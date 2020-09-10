@@ -81,9 +81,6 @@
     <ClInclude Include="Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MacAddress.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Salt.h">
       <Filter>Header Files</Filter>
     </ClInclude>

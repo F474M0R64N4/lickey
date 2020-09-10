@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VERSION_H
+#define VERSION_H
 
 namespace lickey {
   class Version {
@@ -18,3 +19,4 @@ namespace lickey {
 
 #define VERSION() Version::GetInstance().Value()
 }
+#endif // VERSION_H

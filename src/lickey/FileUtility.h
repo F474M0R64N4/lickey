@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FILEUTILITY_H
+#define FILEUTILITY_H
 
 namespace lickey {
   auto GetExtension(const std::string &filepath) -> std::string;
@@ -12,3 +13,4 @@ namespace lickey {
   auto JoinPath(const std::string &folderpath, const std::string &filepath) -> std::string;
   auto ReadLines(const std::string &filepath, std::vector<std::string> &lines) -> bool;
 }
+#endif // FILEUTILITY_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SALT_H
+#define SALT_H
 
 namespace lickey {
   class Salt {
@@ -16,3 +17,4 @@ namespace lickey {
     }
   };
 }
+#endif // SALT_H

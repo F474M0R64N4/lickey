@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HASH_H
+#define HASH_H
 
 namespace lickey {
   class Hash {
@@ -19,3 +20,4 @@ namespace lickey {
     }
   };
 }
+#endif // HASH_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LICENSE_H
+#define LICENSE_H
 #include "Features.h"
 #include "HardwareKey.h"
 #include "Salt.h"
@@ -26,3 +27,4 @@ namespace lickey {
     }
   };
 };
+#endif // LICENSE_H

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "Date.h"
 
-
 namespace lickey {
   bool Load(Date &date, const std::string &str) {
     try {

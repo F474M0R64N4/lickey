@@ -1,9 +1,9 @@
-#pragma once
+#ifndef LICENSEMANAGERTEST_H
+#define LICENSEMANAGERTEST_H
 #define BOOST_TEST_MODULE my_mod
 #include <LicenseManager.h>
 #include <Date.h>
 #include <Features.h>
-#include <FeatureInfo.h>
 #include <License.h>
 #include <boost/test/included/unit_test.hpp>
 
@@ -27,4 +27,4 @@ BOOST_AUTO_TEST_CASE(Constructor01) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-#pragma once
+#endif // LICENSEMANAGERTEST_H

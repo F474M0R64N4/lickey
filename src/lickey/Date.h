@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATE_H
+#define DATE_H
 #include <boost/date_time/gregorian/gregorian.hpp>
 
 namespace lickey {
@@ -8,3 +9,4 @@ namespace lickey {
   auto SetToday(Date &date) -> void;
   auto ToString(const Date &date) -> std::string;
 }
+#endif // DATE_H

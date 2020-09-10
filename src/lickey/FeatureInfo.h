@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FEATUREINFO_H
+#define FEATUREINFO_H
 #include "FeatureVersion.h"
 #include "Date.h"
 #include "Hash.h"
@@ -43,3 +44,4 @@ namespace lickey {
     Hash checkSum; ///< calculated
   };
 }
+#endif // FEATUREINFO_H

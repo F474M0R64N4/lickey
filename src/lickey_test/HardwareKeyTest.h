@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HARDWAREKEYTEST_H
+#define HARDWAREKEYTEST_H
 #define BOOST_TEST_MODULE my_mod
 #include <HardwareKey.h>
 #include <HardwareKeyGetter.h>
@@ -24,3 +25,4 @@ BOOST_AUTO_TEST_CASE(Constructor01)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif // HARDWAREKEYTEST_H

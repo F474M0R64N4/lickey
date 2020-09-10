@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FEATUREVERSION_H
+#define FEATUREVERSION_H
 
 namespace lickey {
   class FeatureVersion {
@@ -20,3 +21,4 @@ namespace lickey {
     std::string version;
   };
 }
+#endif // FEATUREVERSION_H

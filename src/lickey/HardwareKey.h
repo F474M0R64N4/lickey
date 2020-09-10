@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HARDWAREKEY_H
+#define HARDWAREKEY_H
 
 namespace lickey {
   class HardwareKey final {
@@ -22,3 +23,4 @@ namespace lickey {
 
   using HardwareKeys = std::vector<HardwareKey>;
 }
+#endif // HARDWAREKEY_H

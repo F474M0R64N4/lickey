@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LICENSEMANAGER_H
+#define LICENSEMANAGER_H
 #include "Date.h"
 #include "License.h"
 
@@ -58,3 +59,4 @@ namespace lickey {
       FeatureInfo &featureInfo) -> bool;
   };
 }
+#endif // LICENSEMANAGER_H

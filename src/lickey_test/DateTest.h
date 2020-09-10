@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATETEST_H
+#define DATETEST_H
 #define BOOST_TEST_MODULE my_mod
 #include <Date.h>
 #include <boost/test/included/unit_test.hpp>
@@ -30,3 +31,4 @@ BOOST_AUTO_TEST_CASE(EQ01)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+#endif // DATETEST_H

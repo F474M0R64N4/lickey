@@ -175,7 +175,6 @@
     <ClInclude Include="License.h" />
     <ClInclude Include="LicenseManager.h" />
     <ClInclude Include="Log.h" />
-    <ClInclude Include="MacAddress.h" />
     <ClInclude Include="Salt.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Version.h" />

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CRYPTOUTILITY_H
+#define CRYPTOUTILITY_H
 #include "Salt.h"
 
 namespace lickey
@@ -19,3 +20,4 @@ namespace lickey
 
 	auto MakeSalt(Salt& salt) -> bool;
 }
+#endif // CRYPTOUTILITY_H

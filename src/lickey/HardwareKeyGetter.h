@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HARDWAREKEYGETTER_H
+#define HARDWAREKEYGETTER_H
 #include "HardwareKey.h"
 
 namespace lickey {
@@ -10,3 +11,4 @@ namespace lickey {
     auto operator()() const -> HardwareKeys;
   };
 }
+#endif // HARDWAREKEYGETTER_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FEATURES_H
+#define FEATURES_H
 #include "FeatureInfo.h"
 
 namespace lickey {
@@ -11,3 +12,4 @@ namespace lickey {
     auto IsExist(const std::string &featureName) const -> bool;
   };
 }
+#endif // FEATURES_H
