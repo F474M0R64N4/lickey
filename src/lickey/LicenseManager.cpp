@@ -231,54 +231,52 @@ namespace
 		std::string encryptionKey;
 
 		// создадим ключ расшифровки
-		if (!MakeEncryptionKey(dl.key, dl.vendorName, dl.appName, dl.firstFeatureSign, dl.explicitSalt, encryptionKey))
+		if (MakeEncryptionKey(dl.key, dl.vendorName, dl.appName, dl.firstFeatureSign, dl.explicitSalt, encryptionKey))
 		{
-			LOG(error) << "fail to get key";
-			return false;
-		}
+			// буфер для ключа инициализации
+			std::string encryptionIv;
 
-		// буфер для ключа инициализации
-		std::string encryptionIv;
+			// создадим ключ инициализации
+			if (MakeEncryptionIv(dl.key, dl.explicitSalt, encryptionKey, encryptionIv))
+			{
+				// буфер для расшифрованных данных
+				//unsigned char decryptedImpl[BUF_SIZE] = {'\0'};
+				std::string decryptedImpl;
+				//размер расшифрованных данных
+				size_t decryptedImplSize = BUF_SIZE;
+				// расшифровываем данные
+				Decrypt(data, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
+				//char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
+				//boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
+				//std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
+				const int validLen = CalcBase64EncodedSize(4) + 8;
 
-		// создадим ключ инициализации
-		if (!MakeEncryptionIv(dl.key, dl.explicitSalt, encryptionKey, encryptionIv))
-		{
+				if (static_cast<size_t>(validLen) > decryptedImplSize)
+				{
+					LOG(error) << "invalid data section";
+					return false;
+				}
+
+				//boost::scoped_array<char> scopedSaltImpl(saltImpl);
+				const std::string salt_impl = decryptedImpl.substr(0, 8);
+				implicitSalt = salt_impl;
+
+				// дата лицензии
+				const std::string date_impl = decryptedImpl.substr(8, 16);
+
+				if (!Load(lastUsedDate, date_impl))
+				{
+					LOG(error) << "fail to decrypt date because of invalid date";
+					return false;
+				}
+
+				return true;
+			}
 			LOG(error) << "fail to get iv";
 			return false;
 		}
-
-		// буфер для расшифрованных данных
-		//unsigned char decryptedImpl[BUF_SIZE] = {'\0'};
-		std::string decryptedImpl;
-		//размер расшифрованных данных
-		size_t decryptedImplSize = BUF_SIZE;
-		// расшифровываем данные
-		Decrypt(data, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
-		//char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
-		//boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
-		//std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
-		const int validLen = CalcBase64EncodedSize(4) + 8;
-
-		if (static_cast<size_t>(validLen) > decryptedImplSize)
-		{
-			LOG(error) << "invalid data section";
-			return false;
-		}
-
-		//boost::scoped_array<char> scopedSaltImpl(saltImpl);
-		const std::string salt_impl = decryptedImpl.substr(0, 8);
-		implicitSalt = salt_impl;
-
-		// дата лицензии
-		const std::string date_impl = decryptedImpl.substr(8, 16);
-
-		if (!Load(lastUsedDate, date_impl))
-		{
-			LOG(error) << "fail to decrypt date because of invalid date";
-			return false;
-		}
-
-		return true;
+		LOG(error) << "fail to get key";
+		return false;
 	}
 
 
@@ -374,9 +372,9 @@ namespace lickey
 			DecodeBase64(data, decoded, decodedSize);
 			// boost::scoped_array<unsigned char> scopedDecoded(decoded.c_str());
 			/*   if (36 > decodedSize) {
-			     LOG(error) << "no information in data section";
-			     return false;
-			   }*/
+     LOG(error) << "no information in data section";
+     return false;
+   }*/
 			std::string dataBuffer(decodedSize, '\0');
 			std::transform(decoded.c_str(), decoded.c_str() + static_cast<unsigned char>(decodedSize),
 			               dataBuffer.begin(), IntoChar);
