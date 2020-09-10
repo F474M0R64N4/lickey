@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE(Constructor01) {
   {
     lickey::LicenseManager licMgr("v", "a");
     lickey::License lic;
-    licMgr.Load(R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\werds(84-16-F9-F5-79-9F))", keys.front(), lic);
+    licMgr.Load(R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\new(84-16-F9-F5-79-9F))", keys.front(), lic);
     BOOST_CHECK_EQUAL(false, lic.FeatureMap().IsExpired("full"));
     BOOST_CHECK_EQUAL(true, lic.FeatureMap().IsValid("full"));
   }
