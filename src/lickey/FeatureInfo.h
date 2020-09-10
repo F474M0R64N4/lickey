@@ -1,7 +1,7 @@
 #ifndef FEATUREINFO_H
 #define FEATUREINFO_H
-#include "FeatureVersion.h"
 #include "Date.h"
+#include "FeatureVersion.h"
 #include "Hash.h"
 
 namespace lickey {

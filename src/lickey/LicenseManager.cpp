@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "LicenseManager.h"
-#include "FileUtility.h"
-#include "HardwareKeyGetter.h"
-#include "CryptoUtility.h"
-#include "Version.h"
-#include <boost/algorithm/string.hpp>
-#include <boost/range/algorithm/for_each.hpp>
-#include <boost/scoped_array.hpp>
 #include <algorithm>
 #include <fstream>
 #include <utility>
+#include <boost/scoped_array.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/range/algorithm/for_each.hpp>
+#include "CryptoUtility.h"
+#include "FileUtility.h"
+#include "HardwareKeyGetter.h"
+#include "Version.h"
 
 namespace {
   using namespace lickey;

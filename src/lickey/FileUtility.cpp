@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "FileUtility.h"
+
 #include <fstream>
-#include <windows.h>
+#include <Windows.h>
 
 
 namespace lickey {

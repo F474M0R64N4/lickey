@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "CryptoUtility.h"
 
+#include "mbedcrypto/cipher.hpp"
 #include "mbedcrypto/hash.hpp"
 #include "mbedcrypto/tcodec.hpp"
-#include "mbedcrypto/cipher.hpp"
 
 using namespace mbedcrypto;
 using namespace std;
