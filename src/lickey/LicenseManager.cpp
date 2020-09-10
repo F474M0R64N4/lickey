@@ -146,7 +146,7 @@ namespace {
     };
     bool doesDataExist = false;
     bool isInData = false;
-    std::stringstream dataStream; // буфер под лицензию
+    std::string dataStream; // буфер под лицензию
 
     for (const auto &line : lines) {
       // проверка
@@ -161,12 +161,12 @@ namespace {
       }
 
       if (isInData) {
-        dataStream << line; // запишем строки секции data в буфер
+        dataStream.append(line); // запишем строки секции data в буфер
         doesDataExist = true; // секция data найдена
       }
     }
 
-    data = dataStream.str();
+    data = dataStream;
     return doesDataExist; // возвратим флаг
   }
 
