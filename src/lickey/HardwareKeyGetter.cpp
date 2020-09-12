@@ -28,27 +28,26 @@ namespace lickey
 		auto* const heap_handle = GetProcessHeap();
 		auto* const smbios_data = static_cast<raw_smbios_data*>(HeapAlloc(heap_handle, 0,
 		                                                                  static_cast<size_t>(smbios_data_size)));
-		if (!smbios_data)
+		if (smbios_data)
 		{
+			// Retrieve the SMBIOS table
+			const DWORD bytes_written = GetSystemFirmwareTable('RSMB', 0, smbios_data, smbios_data_size);
+			if (bytes_written != smbios_data_size)
+			{
+				return keys;
+			}
+
+			std::string hardware;
+			parse(smbios_data_size, heap_handle, smbios_data, hardware);
+
+			auto sha256_value = to_hex(make_hash(hash_t::sha256, hardware));
+
+			HardwareKey key;
+			key.key = move(sha256_value);
+			keys.push_back(key);
+
 			return keys;
 		}
-
-		// Retrieve the SMBIOS table
-		const DWORD bytes_written = GetSystemFirmwareTable('RSMB', 0, smbios_data, smbios_data_size);
-		if (bytes_written != smbios_data_size)
-		{
-			return keys;
-		}
-
-		std::string hardware;
-		parse(smbios_data_size, heap_handle, smbios_data, hardware);
-
-		auto sha256_value = to_hex(make_hash(hash_t::sha256, hardware));
-
-		HardwareKey key;
-		key.key = move(sha256_value);
-		keys.push_back(key);
-
 		return keys;
 	}
 
