@@ -8,7 +8,7 @@ namespace lickey {
    public:
     HardwareKey();
     HardwareKey(const HardwareKey &obj);
-    explicit HardwareKey(const std::string &obj);
+    explicit HardwareKey(std::string obj);
     ~HardwareKey();
     auto operator=(const HardwareKey &obj) -> HardwareKey&;
     auto operator=(const std::string &obj) -> HardwareKey&;

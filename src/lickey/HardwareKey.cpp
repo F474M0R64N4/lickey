@@ -1,14 +1,16 @@
 #include "stdafx.h"
 #include "HardwareKey.h"
 
+#include <utility>
+
 namespace lickey {
   HardwareKey::HardwareKey() = default;
 
   HardwareKey::HardwareKey(const HardwareKey &obj) = default;
 
 
-  HardwareKey::HardwareKey(const std::string &obj)
-    : key(obj) {
+  HardwareKey::HardwareKey(std::string obj)
+    : key(std::move(obj)) {
   }
 
 
