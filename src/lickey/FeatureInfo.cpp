@@ -2,16 +2,14 @@
 #include "FeatureInfo.h"
 #include "Date.h"
 
-
 namespace lickey {
   feature_info::feature_info(): num_lics_(0) {
   }
 
-
   feature_info::~feature_info() = default;
 
-
-  bool feature_info::is_valid() const {
+  auto feature_info::is_valid() const -> bool
+  {
     if (1 > num_lics_) {
       LOG(error) << "the number of license is zero";
       return false;
@@ -43,8 +41,8 @@ namespace lickey {
   	return true;
   }
 
-
-  bool feature_info::is_expired() const {
+  auto feature_info::is_expired() const -> bool
+  {
     date today;
     set_today(today);
     return today > expire_date_;

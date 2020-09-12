@@ -2,21 +2,20 @@
 #define VERSION_H
 
 namespace lickey {
-  class Version {
+  class version {
     char version_;
    public:
-    static auto get_instance() -> Version&;
-    virtual ~Version();
+    static auto get_instance() -> version&;
+    virtual ~version();
 
     auto value() const -> unsigned int {
       return version_;
     }
 
-   private:
-    Version();
+    version();
   };
 
 
-#define VERSION() Version::get_instance().value()
+#define LICENSE_VERSION() version::get_instance().value()
 }
 #endif // VERSION_H

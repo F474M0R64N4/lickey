@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_SUITE(hardware_key)
 
 BOOST_AUTO_TEST_CASE(constructor01)
 {
-	const lickey::HardwareKeyGetter key_getter;
+	const lickey::hwid_getter key_getter;
 	auto keys = key_getter();
 
     for (auto& key : keys)

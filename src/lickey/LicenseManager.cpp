@@ -23,8 +23,8 @@ namespace
 		std::string vendor_name;
 		std::string app_name;
 		hash first_feature_sign;
-		Salt explicit_salt;
-		Salt implicit_salt;
+		salt explicit_salt;
+		salt implicit_salt;
 		date last_used_date;
 	};
 
@@ -34,7 +34,7 @@ namespace
 		std::string vendor_name;
 		std::string app_name;
 		hash first_feature_sign;
-		Salt explicit_salt;
+		salt explicit_salt;
 	};
 
 	auto into_char = [](const unsigned char c)
@@ -74,8 +74,7 @@ namespace
 	using feature_tree = std::map<std::string, std::string>;
 	using ft_itr = feature_tree::iterator;
 
-
-	void split(const std::string& line, std::vector<std::string>& tokens, const std::string& delim = " ")
+	auto split(const std::string& line, std::vector<std::string>& tokens, const std::string& delim = " ") -> void
 	{
 		const auto trim = [](std::string& str)
 		{
@@ -85,10 +84,9 @@ namespace
 		boost::for_each(tokens, trim);
 	}
 
-
-	void make_feature_tree(
+	auto make_feature_tree(
 		const std::vector<std::string>& tokens,
-		feature_tree& tree)
+		feature_tree& tree) -> void
 	{
 		for (const auto& token : tokens)
 		{
@@ -172,7 +170,7 @@ namespace
 		const std::string& vendor_name,
 		const std::string& app_name,
 		const hash& first_feature_sign,
-		const Salt& explicit_salt,
+		const salt& explicit_salt,
 		std::string& encryption_key) -> bool
 	{
 		std::string src;
@@ -184,7 +182,7 @@ namespace
 
 	auto make_encryption_iv(
 		const hardware_key& key,
-		const Salt& explicit_salt,
+		const salt& explicit_salt,
 		std::string& encryption_key,
 		std::string& encryption_iv) -> bool
 	{
@@ -201,7 +199,7 @@ namespace
 	auto make_feature_sign(
 		const std::string& feature_name,
 		const feature_info& feature_info,
-		const Salt& implicit_salt,
+		const salt& implicit_salt,
 		hash& sign) -> bool
 	{
 		std::string src;
@@ -219,7 +217,7 @@ namespace
 
 	auto decrypt_data(
 		const dl& dl,
-		Salt& implicit_salt,
+		salt& implicit_salt,
 		date& last_used_date,
 		const std::string& data
 	) -> bool
@@ -499,7 +497,7 @@ namespace lickey
 		if (encrypt_data(encrypt_license, encrypted))
 		{
 			std::ostringstream data_section(std::ios::binary);
-			char file_version = VERSION();
+			char file_version = LICENSE_VERSION();
 			const auto explicit_salt_value = loaded_license_.explicit_salt_.value();
 			data_section.write(static_cast<const char*>(&file_version), sizeof(unsigned int));
 			data_section.write(explicit_salt_value.c_str(), sizeof(char) * explicit_salt_value.size());

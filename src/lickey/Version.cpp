@@ -1,18 +1,19 @@
 #include "stdafx.h"
 #include "Version.h"
 
+namespace lickey
+{
+	version::version()
+		: version_(1)
+	{
+		// first version
+	}
 
-namespace lickey {
-  Version::Version()
-    : version_(1) { // first version
-  }
+	auto version::get_instance() -> version&
+	{
+		static version obj;
+		return obj;
+	}
 
-
-  Version &Version::get_instance() {
-    static Version obj;
-    return obj;
-  }
-
-
-  Version::~Version() = default;
+	version::~version() = default;
 }

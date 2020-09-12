@@ -47,7 +47,7 @@ namespace lickey
 		datalen = static_cast<int>(str.length());
 	}
 
-	auto make_salt(Salt& salt) -> bool
+	auto make_salt(salt& salt) -> bool
 	{
 		std::string encoded;
 

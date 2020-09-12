@@ -160,9 +160,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="CryptoUtility.h" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="FeatureInfo.h" />

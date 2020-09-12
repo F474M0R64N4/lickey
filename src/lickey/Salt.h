@@ -2,15 +2,15 @@
 #define SALT_H
 
 namespace lickey {
-  class Salt {
+  class salt {
     std::string salt_;
 
    public:
-    Salt();
-    Salt(const Salt &obj);
-    virtual ~Salt();
-    auto operator=(const Salt &obj) -> Salt&;
-    auto operator=(const std::string &obj) -> Salt&;
+    salt();
+    salt(const salt &obj);
+    virtual ~salt();
+    auto operator=(const salt &obj) -> salt&;
+    auto operator=(const std::string &obj) -> salt&;
 
     auto value() const -> std::string {
       return salt_;

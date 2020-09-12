@@ -1,21 +1,19 @@
 #include "stdafx.h"
 #include "Salt.h"
 
+namespace lickey
+{
+	salt::salt() = default;
 
-namespace lickey {
-  Salt::Salt() = default;
+	salt::salt(const salt& obj) = default;
 
+	salt::~salt() = default;
 
-  Salt::Salt(const Salt &obj) = default;
+	auto salt::operator=(const salt& obj) -> salt& = default;
 
-
-  Salt::~Salt() = default;
-
-  Salt &Salt::operator=(const Salt &obj) = default;
-
-
-  Salt &Salt::operator=(const std::string &obj) {
-    salt_ = obj;
-    return *this;
-  }
+	auto salt::operator=(const std::string& obj) -> salt&
+	{
+		salt_ = obj;
+		return *this;
+	}
 }

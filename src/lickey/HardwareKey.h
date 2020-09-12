@@ -3,7 +3,7 @@
 
 namespace lickey {
   class hardware_key final {
-    friend class HardwareKeyGetter;
+    friend class hwid_getter;
 
    public:
     hardware_key();

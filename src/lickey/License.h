@@ -11,8 +11,8 @@ namespace lickey {
     char file_version_{};
     features features_;
     hardware_key key_;
-    Salt explicit_salt_;
-    Salt implicit_salt_;
+    salt explicit_salt_;
+    salt implicit_salt_;
     date last_used_date_;
 
    public:

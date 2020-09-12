@@ -16,6 +16,6 @@ namespace lickey
 
 	auto decode_base64(std::string& str, std::string& data, int& datalen) -> void;
 
-	auto make_salt(Salt& salt) -> bool;
+	auto make_salt(salt& salt) -> bool;
 }
 #endif // CRYPTOUTILITY_H

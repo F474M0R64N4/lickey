@@ -6,7 +6,7 @@
 
 int main()
 {
-	lickey::HardwareKeyGetter key_getter;
+	lickey::hwid_getter key_getter;
 	auto keys = key_getter();
 
 	lickey::license_manager license_manager("v", "a");

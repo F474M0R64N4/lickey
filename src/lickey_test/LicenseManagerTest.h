@@ -13,7 +13,7 @@ BOOST_AUTO_TEST_SUITE(license_manager_test)
 
 	BOOST_AUTO_TEST_CASE(constructor01)
 	{
-		lickey::HardwareKeyGetter key_getter;
+		lickey::hwid_getter key_getter;
 		auto keys = key_getter();
 
 		if (keys.empty())

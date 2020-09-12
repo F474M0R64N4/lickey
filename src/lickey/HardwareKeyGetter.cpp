@@ -13,11 +13,11 @@ using namespace smbios;
 
 namespace lickey
 {
-	HardwareKeyGetter::HardwareKeyGetter() = default;
+	hwid_getter::hwid_getter() = default;
 
-	HardwareKeyGetter::~HardwareKeyGetter() = default;
+	hwid_getter::~hwid_getter() = default;
 
-	auto HardwareKeyGetter::operator()() const -> hardware_keys
+	auto hwid_getter::operator()() const -> hardware_keys
 	{
 		hardware_keys keys;
 
@@ -51,7 +51,7 @@ namespace lickey
 		return keys;
 	}
 
-	auto HardwareKeyGetter::parse(const DWORD smbios_data_size, void* const heap_handle,
+	auto hwid_getter::parse(const DWORD smbios_data_size, void* const heap_handle,
 	                              raw_smbios_data* const smbios_data, std::string& hardware) const -> void
 	{
 		// Process the SMBIOS data and free the memory under an exit label

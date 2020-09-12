@@ -53,7 +53,7 @@ namespace
 
 auto main(int argc, char* argv[]) -> int
 {
-	std::cout << "License generator V" << VERSION() << "\n";
+	std::cout << "License generator V" << LICENSE_VERSION() << "\n";
 	std::cout << "(half-width characters only / without space and tabspace)\n";
 	std::cout << "\n";
 	std::string vendor_name;
