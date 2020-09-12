@@ -39,11 +39,6 @@ namespace
 		salt explicit_salt;
 	};
 
-	auto into_char = [](const unsigned char c)
-	{
-		return static_cast<char>(c);
-	};
-
 	auto calc_base64_encoded_size(const int orig_data_size) -> int
 	{
 		const auto num_blocks6 = (orig_data_size * 8 + 5) / 6; // the number of blocks (6 bits per a block, rounding up)
