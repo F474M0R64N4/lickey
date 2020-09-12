@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
     std::cin >> filepath;
     ToLowerAndTrim(filepath);
 
-    if (0 == filepath.compare("quit")) {
+    if ("quit" == filepath) {
       std::cout << "done without saving license file\n";
       break;
     }

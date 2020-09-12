@@ -38,12 +38,12 @@ namespace
 		Salt explicitSalt;
 	};
 
-	auto IntoChar = [](unsigned char c)
+	auto IntoChar = [](const unsigned char c)
 	{
 		return static_cast<char>(c);
 	};
 
-	auto CalcBase64EncodedSize(int origDataSize) -> int
+	auto CalcBase64EncodedSize(const int origDataSize) -> int
 	{
 		const int numBlocks6 = (origDataSize * 8 + 5) / 6; // the number of blocks (6 bits per a block, rounding up)
 		const int numBlocks4 = (numBlocks6 + 3) / 4; // the number of blocks (4 characters per a block, rounding up)
@@ -223,8 +223,7 @@ namespace
 		const DL& dl,
 		Salt& implicitSalt,
 		Date& lastUsedDate,
-		const std::string& data,
-		size_t datalen
+		const std::string& data
 	) -> bool
 	{
 		// буфер для ключа расшифровки
@@ -245,7 +244,7 @@ namespace
 				//размер расшифрованных данных
 				size_t decryptedImplSize = buf_size;
 				// расшифровываем данные
-				Decrypt(data, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
+				Decrypt(data, encryptionKey, encryptionIv, decryptedImpl);
 				//char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
 				//boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
 				//std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
@@ -294,7 +293,7 @@ namespace
 				dst.write(strDate.c_str(), sizeof(char) * strDate.size());
 				std::string ecryptedImpl;
 				size_t ecryptedImplSize = buf_size;
-				Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
+				Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl);
 				/////////////
 				EncodeBase64(ecryptedImpl, encrypted);
 				return true;
@@ -322,7 +321,7 @@ namespace lickey
 	}
 
 
-	auto LicenseManager::isLicenseDecrypt(const HardwareKey& key, License& license, int decoded_size,
+	auto LicenseManager::isLicenseDecrypt(const HardwareKey& key, License& license, const int decoded_size,
 	                                      std::string& decoded) -> bool
 	{
 		DL decrypt_license; // структура дешифрованной лицензии
@@ -332,8 +331,7 @@ namespace lickey
 		decrypt_license.firstFeatureSign = license.features.begin()->second.sign;
 		decrypt_license.explicitSalt = license.explicitSalt;
 
-		if (DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate, decoded,
-		                static_cast<const size_t>(decoded_size)))
+		if (DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate, decoded))
 		{
 			// validate each feature
 			for (auto cit = license.features.begin(); cit != license.features.end(); ++cit)
@@ -564,7 +562,7 @@ return false;
 		const FeatureVersion& featureVersion,
 		const Date& issueDate,
 		const Date& expireDate,
-		unsigned int numLics,
+		const unsigned int numLics,
 		License& license)
 	{
 		FeatureInfo featureInfo;
