@@ -6,9 +6,7 @@ namespace lickey {
   FeatureVersion::FeatureVersion() = default;
 
 
-  FeatureVersion::FeatureVersion(const FeatureVersion &obj)
-    : version(obj.version) {
-  }
+  FeatureVersion::FeatureVersion(const FeatureVersion &obj) = default;
 
 
   FeatureVersion::~FeatureVersion() = default;

@@ -4,9 +4,7 @@
 namespace lickey {
   HardwareKey::HardwareKey() = default;
 
-  HardwareKey::HardwareKey(const HardwareKey &obj)
-    : key(obj.key) {
-  }
+  HardwareKey::HardwareKey(const HardwareKey &obj) = default;
 
 
   HardwareKey::HardwareKey(const std::string &obj)

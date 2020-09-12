@@ -8,9 +8,7 @@ namespace lickey {
   }
 
 
-  Hash::Hash(const Hash &obj)
-    : hash(obj.hash) {
-  }
+  Hash::Hash(const Hash &obj) = default;
 
 
   Hash::~Hash()  = default;
