@@ -9,12 +9,12 @@ BOOST_AUTO_TEST_SUITE(HardwareKey)
 
 BOOST_AUTO_TEST_CASE(Constructor01)
 {
-    lickey::HardwareKeyGetter keyGetter;
+	const lickey::HardwareKeyGetter keyGetter;
     lickey::HardwareKeys keys = keyGetter();
 
-    for(size_t i = 0; i < keys.size(); ++i)
+    for (auto& key : keys)
     {
-        BOOST_TEST_MESSAGE(keys[i].Value());
+        BOOST_TEST_MESSAGE(key.Value());
     }
 
     BOOST_CHECK_EQUAL(5, keys.size());

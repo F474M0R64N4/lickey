@@ -14,7 +14,7 @@ namespace lickey
 
 	auto SHA256(std::string& data, std::string& hash) -> bool;
 
-	auto EncodeBase64(std::string& data, std::string& str) -> void;
+	auto EncodeBase64(const std::string& data, std::string& str) -> void;
 
 	auto DecodeBase64(std::string& str, std::string& data, int& datalen) -> void;
 

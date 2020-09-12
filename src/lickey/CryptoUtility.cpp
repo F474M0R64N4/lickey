@@ -38,7 +38,7 @@ namespace lickey
 		return false;
 	}
 
-	auto EncodeBase64(std::string& data, std::string& str) -> void
+	auto EncodeBase64(const std::string& data, std::string& str) -> void
 	{
 		str = to_base64(data);
 	}
@@ -54,7 +54,7 @@ namespace lickey
 		std::string encoded;
 
 		// TODO: salt
-		std::string tmp = "salt";
+		const std::string tmp = "salt";
 
 		EncodeBase64(tmp, encoded);
 		salt = encoded;

@@ -8,7 +8,7 @@ BOOST_AUTO_TEST_SUITE(Date)
 
 BOOST_AUTO_TEST_CASE(Constructor01)
 {
-    lickey::Date date(2017, 2, 28);
+	const lickey::Date date(2017, 2, 28);
 
     BOOST_CHECK_EQUAL(2017, date.year());
     BOOST_CHECK_EQUAL(2, date.month());
@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(Constructor02)
 
 BOOST_AUTO_TEST_CASE(EQ01)
 {
-    lickey::Date date1(2017, 2, 28);
+	const lickey::Date date1(2017, 2, 28);
     lickey::Date date2;
     lickey::Load(date2, "20170228");
     BOOST_CHECK_EQUAL(true, date1 == date2);
