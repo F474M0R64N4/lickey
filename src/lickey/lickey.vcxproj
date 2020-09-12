@@ -169,6 +169,7 @@
     <ClInclude Include="HardwareKey.h" />
     <ClInclude Include="HardwareKeyGetter.h" />
     <ClInclude Include="Hash.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="License.h" />
     <ClInclude Include="LicenseManager.h" />
     <ClInclude Include="Log.h" />
