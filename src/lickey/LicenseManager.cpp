@@ -290,11 +290,9 @@ namespace
 			{
 				const auto str_date = to_string(el.last_used_date);
 				assert(8 == str_date.size());
-				std::ostringstream dst(std::ios::binary);
-				dst.write(el.implicit_salt.value().c_str(), sizeof(char) * el.implicit_salt.value().size());
-				dst.write(str_date.c_str(), sizeof(char) * str_date.size());
+				const auto dst = el.implicit_salt.value().append(str_date);
 				std::string ecrypted_impl;
-				encrypt(dst.str(), encryption_key, encryption_iv, ecrypted_impl);
+				encrypt(dst, encryption_key, encryption_iv, ecrypted_impl);
 				encode_base64(ecrypted_impl, encrypted);
 				return true;
 			}
