@@ -11,99 +11,104 @@
 using namespace mbedcrypto;
 using namespace smbios;
 
-namespace lickey {
-  HardwareKeyGetter::HardwareKeyGetter()  = default;
+namespace lickey
+{
+	HardwareKeyGetter::HardwareKeyGetter() = default;
 
-  HardwareKeyGetter::~HardwareKeyGetter() = default;
+	HardwareKeyGetter::~HardwareKeyGetter() = default;
 
-  auto HardwareKeyGetter::operator()() const -> HardwareKeys
-  {
-	  HardwareKeys keys;
+	auto HardwareKeyGetter::operator()() const -> HardwareKeys
+	{
+		HardwareKeys keys;
 
-	  // Query size of SMBIOS data.
-	  const DWORD smbios_data_size = GetSystemFirmwareTable('RSMB', 0, nullptr, 0);
+		// Query size of SMBIOS data.
+		const DWORD smbios_data_size = GetSystemFirmwareTable('RSMB', 0, nullptr, 0);
 
-	  // Allocate memory for SMBIOS data
-	  auto* const heap_handle = GetProcessHeap();
-	  auto* const smbios_data = static_cast<raw_smbios_data*>(HeapAlloc(heap_handle, 0,
-		  static_cast<size_t>(smbios_data_size)));
-	  if (!smbios_data)
-	  {
-		  return keys;
-	  }
+		// Allocate memory for SMBIOS data
+		auto* const heap_handle = GetProcessHeap();
+		auto* const smbios_data = static_cast<raw_smbios_data*>(HeapAlloc(heap_handle, 0,
+		                                                                  static_cast<size_t>(smbios_data_size)));
+		if (!smbios_data)
+		{
+			return keys;
+		}
 
-	  // Retrieve the SMBIOS table
-	  const DWORD bytes_written = GetSystemFirmwareTable('RSMB', 0, smbios_data, smbios_data_size);
-	  if (bytes_written != smbios_data_size)
-	  {
-		  return keys;
-	  }
+		// Retrieve the SMBIOS table
+		const DWORD bytes_written = GetSystemFirmwareTable('RSMB', 0, smbios_data, smbios_data_size);
+		if (bytes_written != smbios_data_size)
+		{
+			return keys;
+		}
 
-	  // Process the SMBIOS data and free the memory under an exit label
-	  parser meta;
-	  auto* const buff = smbios_data->smbios_table_data;
-	  const auto buff_size = static_cast<size_t>(smbios_data_size);
+		std::string hardware;
+		parse(smbios_data_size, heap_handle, smbios_data, hardware);
 
-	  meta.feed(buff, buff_size);
+		auto sha256_value = to_hex(make_hash(hash_t::sha256, hardware));
 
-	  std::string hardware;
+		HardwareKey key;
+		key.key = move(sha256_value);
+		keys.push_back(key);
 
-	  for (auto& header : meta.headers)
-	  {
-		  string_array_t strings;
-		  parser::extract_strings(header, strings);
+		return keys;
+	}
 
-		  switch (header->type_header)
-		  {
-		  case types::baseboard_info:
-		  {
-			  auto* const x = reinterpret_cast<baseboard_info*>(header);
+	auto HardwareKeyGetter::parse(const DWORD smbios_data_size, void* const heap_handle,
+	                              raw_smbios_data* const smbios_data, std::string& hardware) const -> void
+	{
+		// Process the SMBIOS data and free the memory under an exit label
+		parser meta;
+		auto* const buff = smbios_data->smbios_table_data;
+		const auto buff_size = static_cast<size_t>(smbios_data_size);
 
-			  if (x->length_header == 0)
-				  break;
+		meta.feed(buff, buff_size);
 
-			  hardware.append(strings[x->manufacturer_name]);
-			  hardware.append(strings[x->product_name]);
-		  }
-		  break;
+		for (auto& header : meta.headers)
+		{
+			string_array_t strings;
+			parser::extract_strings(header, strings);
 
-		  case types::bios_info:
-		  {
-			  auto* const x = reinterpret_cast<bios_info*>(header);
+			switch (header->type_header)
+			{
+			case types::baseboard_info:
+				{
+					auto* const x = reinterpret_cast<baseboard_info*>(header);
 
-			  if (x->length_header == 0)
-				  break;
-			  hardware.append(strings[x->vendor]);
-			  hardware.append(strings[x->version]);
-		  }
-		  break;
+					if (x->length_header == 0)
+						break;
 
-		  case types::processor_info:
-		  {
-			  auto* const x = reinterpret_cast<proc_info*>(header);
+					hardware.append(strings[x->manufacturer_name]);
+					hardware.append(strings[x->product_name]);
+				}
+				break;
 
-			  if (x->length_header == 0)
-				  break;
-			  hardware.append(strings[x->manufacturer]);
-			  hardware.append(strings[x->version]);
-			  hardware.append(std::to_string(static_cast<long>(x->id)));
-		  }
-		  break;
+			case types::bios_info:
+				{
+					auto* const x = reinterpret_cast<bios_info*>(header);
 
-		  default:
-			  break;
-		  }
-	  }
+					if (x->length_header == 0)
+						break;
+					hardware.append(strings[x->vendor]);
+					hardware.append(strings[x->version]);
+				}
+				break;
 
-	  HeapFree(heap_handle, 0, smbios_data);
+			case types::processor_info:
+				{
+					auto* const x = reinterpret_cast<proc_info*>(header);
 
-	  auto sha256_value = to_hex(make_hash(hash_t::sha256, hardware));
+					if (x->length_header == 0)
+						break;
+					hardware.append(strings[x->manufacturer]);
+					hardware.append(strings[x->version]);
+					hardware.append(std::to_string(static_cast<long>(x->id)));
+				}
+				break;
 
-	  HardwareKey key;
-	  key.key = move(sha256_value);
-	  keys.push_back(key);
+			default:
+				break;
+			}
+		}
 
-	  return keys;
-
-  }
+		HeapFree(heap_handle, 0, smbios_data);
+	}
 }
