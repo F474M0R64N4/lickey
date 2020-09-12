@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
   std::cin >> appName;
   boost::trim(appName);
   std::string hardwareKey;
-  std::cout << "hardware key(11-22-33-AA-BB-CC format):";
+  std::cout << "hardware key(sha256 format):";
   std::cin >> hardwareKey;
   boost::trim(hardwareKey);
   LicenseManager licMgr(venderName, appName);

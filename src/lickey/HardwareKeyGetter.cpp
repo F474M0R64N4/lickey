@@ -1,12 +1,15 @@
 #include "stdafx.h"
 #include "HardwareKeyGetter.h"
-#include <boost/scoped_ptr.hpp>
-#include <winsock2.h>
-#include <iphlpapi.h>
-#include <iomanip>
-#pragma comment(lib, "IPHLPAPI.lib")
-// https://msdn.microsoft.com/en-us/library/windows/desktop/aa365917(v=vs.85).aspx for mac address
 
+#include "smbios.hpp"
+
+#include <Windows.h>
+
+#include <mbedcrypto/hash.hpp>
+#include <mbedcrypto/tcodec.hpp>
+
+using namespace mbedcrypto;
+using namespace smbios;
 
 namespace lickey {
   HardwareKeyGetter::HardwareKeyGetter() {
@@ -18,51 +21,92 @@ namespace lickey {
 
 
   HardwareKeys HardwareKeyGetter::operator()() const {
-    HardwareKeys keys;
-    ULONG outbufferLength = sizeof(IP_ADAPTER_INFO);
-    PIP_ADAPTER_INFO adapterInfo = static_cast<IP_ADAPTER_INFO *>(malloc(sizeof(IP_ADAPTER_INFO)));
+	  HardwareKeys keys;
 
-    if (ERROR_BUFFER_OVERFLOW == GetAdaptersInfo(adapterInfo, &outbufferLength)) {
-      free(adapterInfo);
-      adapterInfo = static_cast<IP_ADAPTER_INFO *>(malloc(static_cast<size_t>(outbufferLength)));
+	  // Query size of SMBIOS data.
+	  const DWORD smbios_data_size = GetSystemFirmwareTable('RSMB', 0, nullptr, 0);
 
-      if (!adapterInfo) {
-        return keys;
-      }
-    }
+	  // Allocate memory for SMBIOS data
+	  auto* const heap_handle = GetProcessHeap();
+	  auto* const smbios_data = static_cast<raw_smbios_data*>(HeapAlloc(heap_handle, 0,
+		  static_cast<size_t>(smbios_data_size)));
+	  if (!smbios_data)
+	  {
+		  return keys;
+	  }
 
-    DWORD dwRetVal;
+	  // Retrieve the SMBIOS table
+	  const DWORD bytes_written = GetSystemFirmwareTable('RSMB', 0, smbios_data, smbios_data_size);
+	  if (bytes_written != smbios_data_size)
+	  {
+		  return keys;
+	  }
 
-    if (NO_ERROR != (dwRetVal = GetAdaptersInfo(adapterInfo, &outbufferLength))) {
-      return keys;
-    }
+	  // Process the SMBIOS data and free the memory under an exit label
+	  parser meta;
+	  auto* const buff = smbios_data->smbios_table_data;
+	  const auto buff_size = static_cast<size_t>(smbios_data_size);
 
-    boost::scoped_ptr<IP_ADAPTER_INFO> sptrAdapterInfo(adapterInfo);
-    PIP_ADAPTER_INFO pAdapter = adapterInfo;
-    int indexCount = 0;
+	  meta.feed(buff, buff_size);
 
-    while (pAdapter) {
-      std::stringstream physicalAddress;
-      physicalAddress << std::hex << std::uppercase;
+	  std::string hardware;
 
-      for (UINT i = 0; i < pAdapter->AddressLength; i++) {
-        physicalAddress << std::setw(2) << std::setfill('0'); // every loop needs this statement for all tokens
+	  for (auto& header : meta.headers)
+	  {
+		  string_array_t strings;
+		  parser::extract_strings(header, strings);
 
-        if (i == pAdapter->AddressLength - 1) {
-          physicalAddress << static_cast<int>(pAdapter->Address[i]);
+		  switch (header->type)
+		  {
+		  case types::baseboard_info:
+		  {
+			  auto* const x = reinterpret_cast<baseboard_info*>(header);
 
-        } else {
-          physicalAddress << static_cast<int>(pAdapter->Address[i]) << "-";
-        }
-      }
+			  if (x->length == 0)
+				  break;
 
-      HardwareKey key;
-      key.key = physicalAddress.str();
-      keys.push_back(key);
-      pAdapter = pAdapter->Next;
-      ++indexCount;
-    }
+			  hardware.append(strings[x->manufacturer_name]);
+			  hardware.append(strings[x->product_name]);
+		  }
+		  break;
 
-    return keys;
+		  case types::bios_info:
+		  {
+			  auto* const x = reinterpret_cast<bios_info*>(header);
+
+			  if (x->length == 0)
+				  break;
+			  hardware.append(strings[x->vendor]);
+			  hardware.append(strings[x->version]);
+		  }
+		  break;
+
+		  case types::processor_info:
+		  {
+			  auto* const x = reinterpret_cast<proc_info*>(header);
+
+			  if (x->length == 0)
+				  break;
+			  hardware.append(strings[x->manufacturer]);
+			  hardware.append(strings[x->version]);
+			  hardware.append(std::to_string(static_cast<long>(x->id)));
+		  }
+		  break;
+
+		  default:
+			  break;
+		  }
+	  }
+
+	  HeapFree(heap_handle, 0, smbios_data);
+
+	  std::string sha256_value = to_hex(make_hash(hash_t::sha256, hardware));
+
+	  HardwareKey key;
+	  key.key = move(sha256_value);
+	  keys.push_back(key);
+
+	  return keys;
+
   }
 }

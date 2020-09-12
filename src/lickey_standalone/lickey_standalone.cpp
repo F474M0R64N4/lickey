@@ -11,7 +11,7 @@ int main()
 
 	lickey::LicenseManager license_manager("v", "a");
 	lickey::License license;
-	license_manager.Load(R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\putin(84-16-F9-F5-79-9F))",
+	license_manager.Load(R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\vl(8613cff15aca54d4b41de733b957c9b84377c4cbe95d63f9e5dc3540cdabbce0))",
 	                     keys.front(), license);
 
 	if (license.FeatureMap().IsExpired("full") == false)

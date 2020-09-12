@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE(Constructor01)
     BOOST_CHECK_EQUAL(5, keys.size());
     if(5 == keys.size())
     {
-        BOOST_CHECK_EQUAL("84-16-F9-F5-79-9F", keys[0].Value());
+        BOOST_CHECK_EQUAL("8613cff15aca54d4b41de733b957c9b84377c4cbe95d63f9e5dc3540cdabbce0", keys[0].Value());
     }
 }
 

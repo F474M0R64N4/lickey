@@ -176,6 +176,7 @@
     <ClInclude Include="LicenseManager.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Salt.h" />
+    <ClInclude Include="smbios.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Version.h" />
   </ItemGroup>
