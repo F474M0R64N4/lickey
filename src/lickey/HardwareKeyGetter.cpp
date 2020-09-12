@@ -54,13 +54,13 @@ namespace lickey {
 		  string_array_t strings;
 		  parser::extract_strings(header, strings);
 
-		  switch (header->type)
+		  switch (header->type_header)
 		  {
 		  case types::baseboard_info:
 		  {
 			  auto* const x = reinterpret_cast<baseboard_info*>(header);
 
-			  if (x->length == 0)
+			  if (x->length_header == 0)
 				  break;
 
 			  hardware.append(strings[x->manufacturer_name]);
@@ -72,7 +72,7 @@ namespace lickey {
 		  {
 			  auto* const x = reinterpret_cast<bios_info*>(header);
 
-			  if (x->length == 0)
+			  if (x->length_header == 0)
 				  break;
 			  hardware.append(strings[x->vendor]);
 			  hardware.append(strings[x->version]);
@@ -83,7 +83,7 @@ namespace lickey {
 		  {
 			  auto* const x = reinterpret_cast<proc_info*>(header);
 
-			  if (x->length == 0)
+			  if (x->length_header == 0)
 				  break;
 			  hardware.append(strings[x->manufacturer]);
 			  hardware.append(strings[x->version]);

@@ -9,6 +9,7 @@ namespace lickey {
 
     } catch (const std::exception &ex) {
       LOG(error) << "invalid date = " << str;
+      LOG(error) << "reason = " << ex.what();
       return false;
     }
   }

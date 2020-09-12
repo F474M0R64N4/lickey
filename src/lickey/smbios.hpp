@@ -77,24 +77,24 @@ namespace smbios
 		};
 	}
 
-	typedef uint8_t byte_t;
-	typedef uint16_t word_t;
-	typedef uint32_t dword_t;
+	using byte_t = uint8_t;
+	using word_t = uint16_t;
+	using dword_t = uint32_t;
 
 #ifdef _MSC_VER
-	typedef __int64 qword_t;
+	using qword_t = __int64;
 #else
 #ifdef INT64_C
-	typedef uint64_t qword_t;
+	using qword_t = uint64_t;
 #else
-	typedef (unsigned long long int) qwordt_t;
+	using qwordt_t = (unsigned long long int);
 #endif
 #endif
 
-	typedef byte_t str_id;
-	typedef byte_t enum_t;
+	using str_id = byte_t;
+	using enum_t = byte_t;
 
-	typedef std::vector<char*> string_array_t;
+	using string_array_t = std::vector<char*>;
 
 	struct header;
 
@@ -112,9 +112,9 @@ namespace smbios
 
 	struct header
 	{
-		byte_t type;
-		byte_t length;
-		word_t handle;
+		byte_t type_header;
+		byte_t length_header;
+		word_t handle_header;
 	};
 
 	struct string_list : header
@@ -260,8 +260,8 @@ namespace smbios
 		byte_t device;
 	};
 
-	typedef string_list oem_strings;
-	typedef string_list system_config_options;
+	using oem_strings = string_list;
+	using system_config_options = string_list;
 
 	struct lang_info : header
 	{
@@ -350,7 +350,7 @@ namespace smbios
 
 	inline byte_t* parser::skip(byte_t* x)
 	{
-		auto* ptr = x + reinterpret_cast<header*>(x)->length;
+		auto* ptr = x + reinterpret_cast<header*>(x)->length_header;
 		size_t len;
 
 		if (*ptr == 0) ptr += 2;
@@ -367,7 +367,7 @@ namespace smbios
 
 	inline header* parser::extract_strings(header* x, string_array_t& a)
 	{
-		auto* ptr = reinterpret_cast<byte_t*>(x) + x->length;
+		auto* ptr = reinterpret_cast<byte_t*>(x) + x->length_header;
 
 		a.clear();
 		a.push_back(nullptr);
