@@ -14,11 +14,6 @@
 using namespace lickey;
 
 namespace {
-  void ToLower(std::string &str) {
-    std::transform(str.begin(), str.end(), str.begin(), tolower);
-  }
-
-
   void ToLowerAndTrim(std::string &str) {
     std::transform(str.begin(), str.end(), str.begin(), tolower);
     boost::trim(str);
