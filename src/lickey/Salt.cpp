@@ -15,7 +15,7 @@ namespace lickey {
 
 
   Salt &Salt::operator=(const std::string &obj) {
-    salt = obj;
+    salt_ = obj;
     return *this;
   }
 }

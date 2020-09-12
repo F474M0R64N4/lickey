@@ -10,11 +10,11 @@ int main()
 	auto keys = key_getter();
 
 	lickey::LicenseManager license_manager("v", "a");
-	lickey::License license;
+	lickey::license license;
 	license_manager.Load(R"(license)",
 	                     keys.front(), license);
 
-	if (license.FeatureMap().IsExpired("full") == false)
+	if (license.feature_map().is_expired("full") == false)
 	{
 		std::cout << "full:: the license is not expired\n";
 	}
@@ -23,7 +23,7 @@ int main()
 		std::cout << "full:: the license is expired\n";
 	}
 
-	if (license.FeatureMap().IsValid("full") == true)
+	if (license.feature_map().is_valid("full") == true)
 	{
 		std::cout << "full:: license is valid\n";
 	}

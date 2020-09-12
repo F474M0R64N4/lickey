@@ -26,7 +26,7 @@ namespace
 		Hash firstFeatureSign;
 		Salt explicitSalt;
 		Salt implicitSalt;
-		Date lastUsedDate;
+		date lastUsedDate;
 	};
 
 	using DL = struct DecryptLicense
@@ -58,13 +58,13 @@ namespace
 		std::string converted;
 		converted.append("feature ");
 		converted.append("name=").append(featureName).append(" ");
-		converted.append("version=").append(featureInfo.Version().Value()).append(" ");
-		converted.append("issue=").append(ToString(featureInfo.IssueDate())).append(" ");
-		converted.append("expire=").append(ToString(featureInfo.ExpireDate())).append(" ");
+		converted.append("version=").append(featureInfo.version().value()).append(" ");
+		converted.append("issue=").append(to_string(featureInfo.issue_date())).append(" ");
+		converted.append("expire=").append(to_string(featureInfo.expire_date())).append(" ");
 		converted.append("num=");
-		converted.append(std::to_string(featureInfo.NumLics()));
+		converted.append(std::to_string(featureInfo.num_lics()));
 		converted.append(" ");
-		converted.append("sign=").append(featureInfo.Sign().Value());
+		converted.append("sign=").append(featureInfo.sign().Value());
 
 		return converted;
 	}
@@ -177,9 +177,9 @@ namespace
 		std::string& encryptionKey) -> bool
 	{
 		std::string src;
-		src.append(key.Value()).append(explicitSalt.Value()).append(vendorName).append(appName).append(
+		src.append(key.Value()).append(explicitSalt.value()).append(vendorName).append(appName).append(
 			firstFeatureSign.Value());
-		MD5(src, encryptionKey);
+		md5(src, encryptionKey);
 		return true;
 	}
 
@@ -191,11 +191,11 @@ namespace
 		std::string& encryptionIv) -> bool
 	{
 		std::string encodedKey;
-		EncodeBase64(encryptionKey, encodedKey);
+		encode_base64(encryptionKey, encodedKey);
 		std::string src;
-		src.append(encodedKey).append(key.Value()).append(explicitSalt.Value());
+		src.append(encodedKey).append(key.Value()).append(explicitSalt.value());
 		//MD5(src.str().c_str(), src.str().size(), encryptionIv);
-		MD5(src, encryptionIv);
+		md5(src, encryptionIv);
 		return true;
 	}
 
@@ -207,13 +207,13 @@ namespace
 		Hash& sign) -> bool
 	{
 		std::string src;
-		src.append(featureName).append(featureInfo.Version().Value()).append(ToString(featureInfo.IssueDate())).append(
-			ToString(featureInfo.ExpireDate())).append(std::to_string(featureInfo.NumLics())).append(
-			implicitSalt.Value());
+		src.append(featureName).append(featureInfo.version().value()).append(to_string(featureInfo.issue_date())).append(
+			to_string(featureInfo.expire_date())).append(std::to_string(featureInfo.num_lics())).append(
+			implicitSalt.value());
 		std::string sha;
-		SHA256(src, sha);
+		sha256(src, sha);
 		std::string encodedSign;
-		EncodeBase64(sha, encodedSign);
+		encode_base64(sha, encodedSign);
 		sign = encodedSign;
 		return true;
 	}
@@ -222,7 +222,7 @@ namespace
 	auto DecryptData(
 		const DL& dl,
 		Salt& implicitSalt,
-		Date& lastUsedDate,
+		date& lastUsedDate,
 		const std::string& data
 	) -> bool
 	{
@@ -244,7 +244,7 @@ namespace
 				//размер расшифрованных данных
 				const size_t decryptedImplSize = buf_size;
 				// расшифровываем данные
-				Decrypt(data, encryptionKey, encryptionIv, decryptedImpl);
+				decrypt(data, encryptionKey, encryptionIv, decryptedImpl);
 				//char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
 				//boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
 				//std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
@@ -263,7 +263,7 @@ namespace
 				// дата лицензии
 				const auto date_impl = decryptedImpl.substr(8, 16);
 
-				if (Load(lastUsedDate, date_impl))
+				if (load(lastUsedDate, date_impl))
 					return true;
 				LOG(error) << "fail to decrypt date because of invalid date";
 				return false;
@@ -286,15 +286,15 @@ namespace
 
 			if (MakeEncryptionIv(el.key, el.explicitSalt, encryptionKey, encryptionIv))
 			{
-				const auto strDate = ToString(el.lastUsedDate);
+				const auto strDate = to_string(el.lastUsedDate);
 				assert(8 == strDate.size());
 				std::ostringstream dst(std::ios::binary);
-				dst.write(el.implicitSalt.Value().c_str(), sizeof(char) * el.implicitSalt.Value().size());
+				dst.write(el.implicitSalt.value().c_str(), sizeof(char) * el.implicitSalt.value().size());
 				dst.write(strDate.c_str(), sizeof(char) * strDate.size());
 				std::string ecryptedImpl;
-				Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl);
+				encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl);
 				/////////////
-				EncodeBase64(ecryptedImpl, encrypted);
+				encode_base64(ecryptedImpl, encrypted);
 				return true;
 			}
 			LOG(error) << "fail to get iv";
@@ -320,24 +320,24 @@ namespace lickey
 	}
 
 
-	auto LicenseManager::isLicenseDecrypt(const HardwareKey& key, License& license, const int decoded_size,
+	auto LicenseManager::isLicenseDecrypt(const HardwareKey& key, license& license, const int decoded_size,
 	                                      std::string& decoded) -> bool
 	{
 		DL decrypt_license; // структура дешифрованной лицензии
 		decrypt_license.key = key;
 		decrypt_license.vendorName = vendorName;
 		decrypt_license.appName = appName;
-		decrypt_license.firstFeatureSign = license.features.begin()->second.sign;
-		decrypt_license.explicitSalt = license.explicitSalt;
+		decrypt_license.firstFeatureSign = license.features_.begin()->second.sign_;
+		decrypt_license.explicitSalt = license.explicit_salt_;
 
-		if (DecryptData(decrypt_license, license.implicitSalt, license.lastUsedDate, decoded))
+		if (DecryptData(decrypt_license, license.implicit_salt_, license.last_used_date_, decoded))
 		{
 			// validate each feature
-			for (auto cit = license.features.begin(); cit != license.features.end(); ++cit)
+			for (auto cit = license.features_.begin(); cit != license.features_.end(); ++cit)
 			{
 				Hash checkSum;
-				MakeFeatureSign(cit->first, cit->second, license.implicitSalt, checkSum);
-				cit->second.checkSum = checkSum;
+				MakeFeatureSign(cit->first, cit->second, license.implicit_salt_, checkSum);
+				cit->second.check_sum_ = checkSum;
 			}
 
 			loadedLicense = license;
@@ -349,7 +349,7 @@ namespace lickey
 		return false;
 	}
 
-	auto LicenseManager::isLicenseDataSectionRead(const HardwareKey& key, License& license,
+	auto LicenseManager::isLicenseDataSectionRead(const HardwareKey& key, license& license,
 	                                              const std::vector<std::string>& lines) -> bool
 	{
 		// буфер под лицензию
@@ -359,7 +359,7 @@ namespace lickey
 		{
 			auto decodedSize = 0;
 			std::string decoded; // дешифрованная лицензия
-			DecodeBase64(data, decoded, decodedSize);
+			decode_base64(data, decoded, decodedSize);
 			// boost::scoped_array<unsigned char> scopedDecoded(decoded.c_str());
 			/*   if (36 > decodedSize) {
 LOG(error) << "no information in data section";
@@ -369,7 +369,7 @@ return false;
 			std::transform(decoded.c_str(), decoded.c_str() + static_cast<unsigned char>(decodedSize),
 			               dataBuffer.begin(), IntoChar);
 			std::istringstream dataSection(dataBuffer, std::ios::binary);
-			dataSection.read(static_cast<char*>(&license.fileVersion), sizeof(unsigned int));
+			dataSection.read(static_cast<char*>(&license.file_version_), sizeof(unsigned int));
 			const auto saltLengthInBase64 = CalcBase64EncodedSize(4);
 			// соль лицензии
 			auto *salt = static_cast<char*>(malloc(
@@ -386,7 +386,7 @@ return false;
 				const auto it = static_cast<size_t>(saltLengthInBase64); //memsize
 				salt[it] = '\0';
 				// "точная" соль лицензии
-				license.explicitSalt = salt;
+				license.explicit_salt_ = salt;
 			}
 
 			// оставшееся количество символов в лицензии
@@ -415,7 +415,7 @@ return false;
 				auto decoded_size = 0;
 				std::string decoded_; // буфер под дешифрованную лицензию
 				std::string bse(base64Encrypted);
-				DecodeBase64(bse, decoded_, decoded_size); // дешифруем лицензию из base64 формата
+				decode_base64(bse, decoded_, decoded_size); // дешифруем лицензию из base64 формата
 				//boost::scoped_array<unsigned char> scopedDecoded(decoded);
 				return isLicenseDecrypt(key, license, decoded_size, decoded_); // дешифруем лицензию
 			}
@@ -427,7 +427,7 @@ return false;
 		return false;
 	}
 
-	auto LicenseManager::isLicenseRead(const std::string& filepath, const HardwareKey& key, License& license) -> bool
+	auto LicenseManager::isLicenseRead(const std::string& filepath, const HardwareKey& key, license& license) -> bool
 	{
 		std::vector<std::string> lines;
 
@@ -441,11 +441,11 @@ return false;
 
 				if (ConvertFeature(line, featureName, featureInfo))
 				{
-					license.features[featureName] = featureInfo;
+					license.features_[featureName] = featureInfo;
 				}
 			}
 
-			if (license.features.empty())
+			if (license.features_.empty())
 			{
 				LOG(error) << "no feature";
 				return false;
@@ -459,11 +459,11 @@ return false;
 		return false;
 	}
 
-	auto LicenseManager::Load(const std::string& filepath, const HardwareKey& key, License& license) -> bool
+	auto LicenseManager::Load(const std::string& filepath, const HardwareKey& key, license& license) -> bool
 	{
 		licenseFilepath = filepath;
 		isLicenseLoaded = false;
-		license.key = key;
+		license.key_ = key;
 		LOG(info) << "start to load license file = " << filepath;
 		return isLicenseRead(filepath, key, license);
 	}
@@ -472,20 +472,20 @@ return false;
 	{
 		if (isLicenseLoaded)
 		{
-			if (loadedLicense.features.empty())
+			if (loadedLicense.features_.empty())
 			{
 				LOG(error) << "no feature to generate license file";
 				return false;
 			}
 
-			MakeSalt(loadedLicense.explicitSalt);
-			MakeSalt(loadedLicense.implicitSalt);
+			make_salt(loadedLicense.explicit_salt_);
+			make_salt(loadedLicense.implicit_salt_);
 
-			for (auto& feature : loadedLicense.features)
+			for (auto& feature : loadedLicense.features_)
 			{
 				Hash sign;
-				MakeFeatureSign(feature.first, feature.second, loadedLicense.implicitSalt, sign);
-				feature.second.sign = sign;
+				MakeFeatureSign(feature.first, feature.second, loadedLicense.implicit_salt_, sign);
+				feature.second.sign_ = sign;
 			}
 
 			return UpdateLicense();
@@ -498,15 +498,15 @@ return false;
 	auto LicenseManager::UpdateLicense() -> bool
 	{
 		std::string encrypted; // зашифрованная лицензия
-		Date today;
-		SetToday(today); // назначим теперешнюю дату
+		date today;
+		set_today(today); // назначим теперешнюю дату
 		EL encrypt_license;
-		encrypt_license.key = loadedLicense.key; // hwid ПК
+		encrypt_license.key = loadedLicense.key_; // hwid ПК
 		encrypt_license.vendorName = vendorName; // vendor
 		encrypt_license.appName = appName; // имя программы
-		encrypt_license.firstFeatureSign = loadedLicense.features.begin()->second.sign; // контрольная сумма
-		encrypt_license.explicitSalt = loadedLicense.explicitSalt;
-		encrypt_license.implicitSalt = loadedLicense.implicitSalt;
+		encrypt_license.firstFeatureSign = loadedLicense.features_.begin()->second.sign_; // контрольная сумма
+		encrypt_license.explicitSalt = loadedLicense.explicit_salt_;
+		encrypt_license.implicitSalt = loadedLicense.implicit_salt_;
 		encrypt_license.lastUsedDate = today; // когда использовали последний раз лицензию
 
 		// зашифруем данные
@@ -514,17 +514,17 @@ return false;
 		{
 			std::ostringstream dataSection(std::ios::binary);
 			char fileVersion = VERSION();
-			const auto explictSaltValue = loadedLicense.explicitSalt.Value();
+			const auto explictSaltValue = loadedLicense.explicit_salt_.value();
 			dataSection.write(static_cast<const char*>(&fileVersion), sizeof(unsigned int));
 			dataSection.write(explictSaltValue.c_str(), sizeof(char) * explictSaltValue.size());
 			dataSection.write(encrypted.c_str(), sizeof(char) * encrypted.size());
-			EncodeBase64(dataSection.str(), encrypted);
+			encode_base64(dataSection.str(), encrypted);
 			// запись в файл
 			std::ofstream out(licenseFilepath.c_str());
 
 			if (out)
 			{
-				for (const auto& feature : loadedLicense.features)
+				for (const auto& feature : loadedLicense.features_)
 				{
 					out << Convert(feature.first, feature.second) << "\n";
 				}
@@ -546,11 +546,11 @@ return false;
 		return false;
 	}
 
-	auto LicenseManager::Save(const std::string& filepath, const HardwareKey& key, License& license) -> bool
+	auto LicenseManager::Save(const std::string& filepath, const HardwareKey& key, license& license) -> bool
 	{
 		licenseFilepath = filepath;
 		loadedLicense = license;
-		loadedLicense.key = key;
+		loadedLicense.key_ = key;
 		isLicenseLoaded = true;
 		return Update();
 	}
@@ -558,18 +558,18 @@ return false;
 
 	void LicenseManager::Add(
 		const std::string& featureName,
-		const FeatureVersion& featureVersion,
-		const Date& issueDate,
-		const Date& expireDate,
+		const feature_version& featureVersion,
+		const date& issueDate,
+		const date& expireDate,
 		const unsigned int numLics,
-		License& license)
+		license& license)
 	{
 		FeatureInfo featureInfo;
-		featureInfo.version = featureVersion;
-		featureInfo.issueDate = issueDate;
-		featureInfo.expireDate = expireDate;
-		featureInfo.numLics = numLics;
-		license.features[featureName] = featureInfo;
+		featureInfo.version_ = featureVersion;
+		featureInfo.issue_date_ = issueDate;
+		featureInfo.expire_date_ = expireDate;
+		featureInfo.num_lics_ = numLics;
+		license.features_[featureName] = featureInfo;
 	}
 
 
@@ -613,7 +613,7 @@ return false;
 			return false;
 		}
 
-		featureInfo.version.version = it->second;
+		featureInfo.version_.version_ = it->second;
 		it = featureTree.find("issue"); // когда выдана лицензия
 
 		if (featureTree.end() == it)
@@ -622,7 +622,7 @@ return false;
 			return false;
 		}
 
-		if (lickey::Load(featureInfo.issueDate, it->second))
+		if (lickey::load(featureInfo.issue_date_, it->second))
 		{
 			it = featureTree.find("expire"); // конец даты лицензии
 
@@ -632,7 +632,7 @@ return false;
 				return false;
 			}
 
-			if (lickey::Load(featureInfo.expireDate, it->second))
+			if (lickey::load(featureInfo.expire_date_, it->second))
 			{
 				it = featureTree.find("num"); // количество выданных лицензий
 
@@ -642,7 +642,7 @@ return false;
 					return false;
 				}
 
-				featureInfo.numLics = boost::lexical_cast<int>(it->second);
+				featureInfo.num_lics_ = boost::lexical_cast<int>(it->second);
 				it = featureTree.find("sign"); // контрольная сумма лицензии
 
 				if (featureTree.end() == it)
@@ -651,7 +651,7 @@ return false;
 					return false;
 				}
 
-				featureInfo.sign = it->second;
+				featureInfo.sign_ = it->second;
 				LOG(info) << "done to convert feature successfully (name = " << featureName << ")\n";
 				return true;
 			}

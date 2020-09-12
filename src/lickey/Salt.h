@@ -3,7 +3,7 @@
 
 namespace lickey {
   class Salt {
-    std::string salt;
+    std::string salt_;
 
    public:
     Salt();
@@ -12,8 +12,8 @@ namespace lickey {
     auto operator=(const Salt &obj) -> Salt&;
     auto operator=(const std::string &obj) -> Salt&;
 
-    auto Value() const -> std::string {
-      return salt;
+    auto value() const -> std::string {
+      return salt_;
     }
   };
 }

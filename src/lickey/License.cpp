@@ -4,13 +4,13 @@
 
 
 namespace lickey {
-  License::License()
-    : fileVersion(VERSION()) {
+  license::license()
+    : file_version_(VERSION()) {
   }
 
-  License::License(const License &obj) = default;
+  license::license(const license &obj) = default;
 
-  License::~License() = default;
+  license::~license() = default;
 
-  License &License::operator=(const License &obj) = default;
+  license &license::operator=(const license &obj) = default;
 }

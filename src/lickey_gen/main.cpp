@@ -15,37 +15,37 @@ using namespace lickey;
 
 namespace
 {
-	auto ToLowerAndTrim(std::string& str) -> void
+	auto to_lower_and_trim(std::string& str) -> void
 	{
 		std::transform(str.begin(), str.end(), str.begin(), tolower);
 		boost::trim(str);
 	}
 
 
-	auto AddFeature(
-		const std::string& featureName,
-		const std::string& featureVersion,
-		const Date& issue,
-		const std::string& expireDate,
-		const unsigned int numLics,
-		License& lic) -> bool
+	auto add_feature(
+		const std::string& feature_name,
+		const std::string& feature_version,
+		const date& issue,
+		const std::string& expire_date,
+		const unsigned int num_lics,
+		license& lic) -> bool
 	{
-		Date expire;
+		date expire;
 
-		if (Load(expire, expireDate))
+		if (load(expire, expire_date))
 		{
-			FeatureVersion version;
-			version = featureVersion;
-			LicenseManager::Add(featureName, version, issue, expire, numLics, lic);
-			std::cout << "done to add feature = " << featureName << "\n";
-			std::cout << "  version = " << featureVersion << "\n";
-			std::cout << "  issue date = " << ToString(issue) << "\n";
-			std::cout << "  expire date = " << expireDate << "\n";
-			std::cout << "  num licenses = " << numLics << "\n";
+			feature_version version;
+			version = feature_version;
+			LicenseManager::Add(feature_name, version, issue, expire, num_lics, lic);
+			std::cout << "done to add feature = " << feature_name << "\n";
+			std::cout << "  version = " << feature_version << "\n";
+			std::cout << "  issue date = " << to_string(issue) << "\n";
+			std::cout << "  expire date = " << expire_date << "\n";
+			std::cout << "  num licenses = " << num_lics << "\n";
 			return true;
 		}
 
-		std::cout << "invalid expire date = " << expireDate << "\n";
+		std::cout << "invalid expire date = " << expire_date << "\n";
 		return false;
 	}
 }
@@ -56,54 +56,54 @@ auto main(int argc, char* argv[]) -> int
 	std::cout << "License generator V" << VERSION() << "\n";
 	std::cout << "(half-width characters only / without space and tabspace)\n";
 	std::cout << "\n";
-	std::string venderName;
+	std::string vendor_name;
 	std::cout << "vender name:";
-	std::cin >> venderName;
-	boost::trim(venderName);
-	std::string appName;
+	std::cin >> vendor_name;
+	boost::trim(vendor_name);
+	std::string app_name;
 	std::cout << "application name:";
-	std::cin >> appName;
-	boost::trim(appName);
-	std::string hardwareKey;
+	std::cin >> app_name;
+	boost::trim(app_name);
+	std::string hardware_key;
 	std::cout << "hardware key(sha256 format):";
-	std::cin >> hardwareKey;
-	boost::trim(hardwareKey);
-	LicenseManager licMgr(venderName, appName);
-	License lic;
+	std::cin >> hardware_key;
+	boost::trim(hardware_key);
+	LicenseManager lic_mgr(vendor_name, app_name);
+	license lic;
 
 	do
 	{
 		std::cout << "feature name (\"quit\" to quit this operation):";
 		std::string feature;
 		std::cin >> feature;
-		ToLowerAndTrim(feature);
+		to_lower_and_trim(feature);
 
 		if ("quit" == feature)
 		{
 			break;
 		}
 
-		std::string featureVersion;
+		std::string feature_version;
 		std::cout << "feature version(positive integer):";
-		std::cin >> featureVersion;
-		Date issue;
-		SetToday(issue);
-		std::string expireDate;
+		std::cin >> feature_version;
+		date issue;
+		set_today(issue);
+		std::string expire_date;
 
 		do
 		{
 			std::cout << "expire date(YYYYMMDD format):";
-			std::cin >> expireDate;
-			ToLowerAndTrim(expireDate);
+			std::cin >> expire_date;
+			to_lower_and_trim(expire_date);
 
-			if ("quit" == expireDate)
+			if ("quit" == expire_date)
 			{
 				break;
 			}
 
-			Date tmp;
+			date tmp;
 
-			if (Load(tmp, expireDate))
+			if (load(tmp, expire_date))
 			{
 				break;
 			}
@@ -112,14 +112,14 @@ auto main(int argc, char* argv[]) -> int
 		}
 		while (true);
 
-		unsigned int numLics = 0;
+		unsigned int num_lics = 0;
 
 		do
 		{
 			std::cout << "num licenses(position integer):";
-			std::cin >> numLics;
+			std::cin >> num_lics;
 
-			if (0 == numLics)
+			if (0 == num_lics)
 			{
 				std::cout << "num licenses must be more than 0\n";
 				continue;
@@ -129,7 +129,7 @@ auto main(int argc, char* argv[]) -> int
 		}
 		while (true);
 
-		if (AddFeature(feature, featureVersion, issue, expireDate, numLics, lic))
+		if (add_feature(feature, feature_version, issue, expire_date, num_lics, lic))
 		{
 			continue;
 		}
@@ -138,7 +138,7 @@ auto main(int argc, char* argv[]) -> int
 	}
 	while (true);
 
-	if (lic.FeatureMap().empty())
+	if (lic.feature_map().empty())
 	{
 		std::cout << "no feature defined\n";
 		std::string buf;
@@ -151,7 +151,7 @@ auto main(int argc, char* argv[]) -> int
 		std::string filepath;
 		std::cout << "license file name:";
 		std::cin >> filepath;
-		ToLowerAndTrim(filepath);
+		to_lower_and_trim(filepath);
 
 		if ("quit" == filepath)
 		{
@@ -159,18 +159,18 @@ auto main(int argc, char* argv[]) -> int
 			break;
 		}
 
-		auto baseFilepath = GetBaseFilePath(filepath);
+		auto base_filepath = GetBaseFilePath(filepath);
 		auto extension = GetExtension(filepath);
-		std::stringstream filepathImpl;
-		filepathImpl << baseFilepath << "(" << hardwareKey << ")" << extension;
+		std::stringstream filepath_impl;
+		filepath_impl << base_filepath << "(" << hardware_key << ")" << extension;
 
-		if (licMgr.Save(filepathImpl.str(), HardwareKey(hardwareKey), lic))
+		if (lic_mgr.Save(filepath_impl.str(), HardwareKey(hardware_key), lic))
 		{
-			std::cout << "done to save into = " << filepathImpl.str() << "\n";
+			std::cout << "done to save into = " << filepath_impl.str() << "\n";
 			break;
 		}
 
-		std::cout << "fail to save into = " << filepathImpl.str() << "\n";
+		std::cout << "fail to save into = " << filepath_impl.str() << "\n";
 	}
 	while (true);
 

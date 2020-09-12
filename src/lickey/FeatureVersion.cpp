@@ -3,20 +3,20 @@
 
 
 namespace lickey {
-  FeatureVersion::FeatureVersion() = default;
+  feature_version::feature_version() = default;
 
 
-  FeatureVersion::FeatureVersion(const FeatureVersion &obj) = default;
+  feature_version::feature_version(const feature_version &obj) = default;
 
 
-  FeatureVersion::~FeatureVersion() = default;
+  feature_version::~feature_version() = default;
 
 
-  FeatureVersion &FeatureVersion::operator=(const FeatureVersion &obj) = default;
+  feature_version &feature_version::operator=(const feature_version &obj) = default;
 
 
-  FeatureVersion &FeatureVersion::operator=(const std::string &v) {
-    version = v;
+  feature_version &feature_version::operator=(const std::string &v) {
+    version_ = v;
     return *this;
   }
 }

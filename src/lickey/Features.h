@@ -5,11 +5,11 @@
 namespace lickey {
   class Hash;
 
-  class Features : public std::map<std::string, FeatureInfo> {
+  class features : public std::map<std::string, FeatureInfo> {
    public:
-    auto IsValid(const std::string &featureName) const -> bool;
-    auto IsExpired(const std::string &featureName) const -> bool;
-    auto IsExist(const std::string &featureName) const -> bool;
+    auto is_valid(const std::string &feature_name) const -> bool;
+    auto is_expired(const std::string &feature_name) const -> bool;
+    auto is_exist(const std::string &feature_name) const -> bool;
   };
 }
 #endif // FEATURES_H

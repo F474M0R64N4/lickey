@@ -5,25 +5,25 @@
 #include "Salt.h"
 
 namespace lickey {
-  class License {
+  class license {
     friend class LicenseManager;
 
-    char fileVersion{};
-    Features features;
-    HardwareKey key;
-    Salt explicitSalt;
-    Salt implicitSalt;
-    Date lastUsedDate;
+    char file_version_{};
+    features features_;
+    HardwareKey key_;
+    Salt explicit_salt_;
+    Salt implicit_salt_;
+    date last_used_date_;
 
    public:
-    License();
-    License(const License &obj);
-    virtual ~License();
+    license();
+    license(const license &obj);
+    virtual ~license();
 
-    auto operator=(const License &obj) -> License&;
+    auto operator=(const license &obj) -> license&;
 
-    auto FeatureMap() -> Features & {
-      return features;
+    auto feature_map() -> features & {
+      return features_;
     }
   };
 };

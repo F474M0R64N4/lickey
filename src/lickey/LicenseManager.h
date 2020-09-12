@@ -6,35 +6,35 @@
 namespace lickey {
   class HardwareKey;
   class FeatureInfo;
-  class FeatureVersion;
+  class feature_version;
 
   class LicenseManager {
     std::string vendorName;
     std::string appName;
     std::string licenseFilepath;
     bool isLicenseLoaded;
-    License loadedLicense;
+    license loadedLicense;
 
    public:
     LicenseManager(std::string  vn, std::string  an);
     virtual ~LicenseManager();
 
-    auto Load(const std::string &filepath, const HardwareKey &key, License &license) -> bool;
-    auto isLicenseDecrypt(const HardwareKey &key, License &license, int decoded_size, std::string &decoded) -> bool;
-    auto isLicenseDataSectionRead(const HardwareKey &key, License &license, const std::vector<std::string> &lines) -> bool;
-    auto isLicenseRead(const std::string &filepath, const HardwareKey &key, License &license) -> bool;
+    auto Load(const std::string &filepath, const HardwareKey &key, license &license) -> bool;
+    auto isLicenseDecrypt(const HardwareKey &key, license &license, int decoded_size, std::string &decoded) -> bool;
+    auto isLicenseDataSectionRead(const HardwareKey &key, license &license, const std::vector<std::string> &lines) -> bool;
+    auto isLicenseRead(const std::string &filepath, const HardwareKey &key, license &license) -> bool;
 
     auto Update() -> bool;
     auto UpdateLicense() -> bool;
 
-    auto Save(const std::string &filepath, const HardwareKey &key, License &license) -> bool;
+    auto Save(const std::string &filepath, const HardwareKey &key, license &license) -> bool;
     static auto Add(
       const std::string &featureName,
-      const FeatureVersion &featureVersion,
-      const Date &issueDate,
-      const Date &expireDate,
+      const feature_version &featureVersion,
+      const date &issueDate,
+      const date &expireDate,
       unsigned int numLics,
-      License &license) -> void;
+      license &license) -> void;
 
     auto VendorName() const -> const std::string & {
       return vendorName;

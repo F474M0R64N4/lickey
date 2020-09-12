@@ -3,13 +3,13 @@
 
 namespace lickey {
   class Version {
-    char version;
+    char version_;
    public:
-    static auto GetInstance() -> Version&;
+    static auto get_instance() -> Version&;
     virtual ~Version();
 
-    auto Value() const -> unsigned int {
-      return version;
+    auto value() const -> unsigned int {
+      return version_;
     }
 
    private:
@@ -17,6 +17,6 @@ namespace lickey {
   };
 
 
-#define VERSION() Version::GetInstance().Value()
+#define VERSION() Version::get_instance().value()
 }
 #endif // VERSION_H

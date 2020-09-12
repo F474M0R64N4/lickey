@@ -4,11 +4,11 @@
 
 namespace lickey {
   Version::Version()
-    : version(1) { // first version
+    : version_(1) { // first version
   }
 
 
-  Version &Version::GetInstance() {
+  Version &Version::get_instance() {
     static Version obj;
     return obj;
   }

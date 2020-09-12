@@ -12,36 +12,36 @@ namespace lickey {
     FeatureInfo();
     virtual ~FeatureInfo();
   	
-    auto IsValid() const -> bool;
-    auto IsExpired() const -> bool;
+    auto is_valid() const -> bool;
+    auto is_expired() const -> bool;
 
-    auto Version() const -> const FeatureVersion & {
-      return version;
+    auto version() const -> const feature_version & {
+      return version_;
     }
 
-    auto NumLics() const -> unsigned int {
-      return numLics;
+    auto num_lics() const -> unsigned int {
+      return num_lics_;
     }
 
-    auto IssueDate() const -> const Date & {
-      return issueDate;
+    auto issue_date() const -> const date & {
+      return issue_date_;
     }
 
-    auto ExpireDate() const -> const Date & {
-      return expireDate;
+    auto expire_date() const -> const date & {
+      return expire_date_;
     }
 
-    auto Sign() const -> const Hash & {
-      return sign;
+    auto sign() const -> const Hash & {
+      return sign_;
     }
 
    private:
-    FeatureVersion version;
-    unsigned int numLics;
-    Date issueDate;
-    Date expireDate;
-    Hash sign; ///< recoded
-    Hash checkSum; ///< calculated
+    feature_version version_;
+    unsigned int num_lics_;
+    date issue_date_;
+    date expire_date_;
+    Hash sign_; ///< recoded
+    Hash check_sum_; ///< calculated
   };
 }
 #endif // FEATUREINFO_H

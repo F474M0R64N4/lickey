@@ -2,23 +2,23 @@
 #define FEATUREVERSION_H
 
 namespace lickey {
-  class FeatureVersion {
+  class feature_version {
     friend class LicenseManager;
 
    public:
-    FeatureVersion();
-    FeatureVersion(const FeatureVersion &obj);
-    virtual ~FeatureVersion();
+    feature_version();
+    feature_version(const feature_version &obj);
+    virtual ~feature_version();
 
-    auto operator=(const FeatureVersion &obj) -> FeatureVersion&;
-    auto operator=(const std::string &v) -> FeatureVersion&;
+    auto operator=(const feature_version &obj) -> feature_version&;
+    auto operator=(const std::string &v) -> feature_version&;
 
-    auto Value() const -> const std::string & {
-      return version;
+    auto value() const -> const std::string & {
+      return version_;
     }
 
    private:
-    std::string version;
+    std::string version_;
   };
 }
 #endif // FEATUREVERSION_H

@@ -9,12 +9,12 @@
 
 #include "HardwareKeyGetter.h"
 
-BOOST_AUTO_TEST_SUITE(LicenseManagerTest)
+BOOST_AUTO_TEST_SUITE(license_manager_test)
 
 	BOOST_AUTO_TEST_CASE(Constructor01)
 	{
-		lickey::HardwareKeyGetter keyGetter;
-		auto keys = keyGetter();
+		lickey::HardwareKeyGetter key_getter;
+		auto keys = key_getter();
 
 		if (keys.empty())
 		{
@@ -22,13 +22,13 @@ BOOST_AUTO_TEST_SUITE(LicenseManagerTest)
 		}
 
 		{
-			lickey::LicenseManager licMgr("v", "a");
-			lickey::License lic;
-			licMgr.Load(
+			lickey::LicenseManager lic_mgr("v", "a");
+			lickey::license lic;
+			lic_mgr.Load(
 				R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\vl(8613cff15aca54d4b41de733b957c9b84377c4cbe95d63f9e5dc3540cdabbce0))",
 				keys.front(), lic);
-			BOOST_CHECK_EQUAL(false, lic.FeatureMap().IsExpired("full"));
-			BOOST_CHECK_EQUAL(true, lic.FeatureMap().IsValid("full"));
+			BOOST_CHECK_EQUAL(false, lic.feature_map().is_expired("full"));
+			BOOST_CHECK_EQUAL(true, lic.feature_map().is_valid("full"));
 		}
 	}
 
