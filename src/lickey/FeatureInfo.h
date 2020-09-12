@@ -5,12 +5,12 @@
 #include "Hash.h"
 
 namespace lickey {
-  class FeatureInfo {
-    friend class LicenseManager;
+  class feature_info {
+    friend class license_manager;
 
    public:
-    FeatureInfo();
-    virtual ~FeatureInfo();
+    feature_info();
+    virtual ~feature_info();
   	
     auto is_valid() const -> bool;
     auto is_expired() const -> bool;
@@ -31,7 +31,7 @@ namespace lickey {
       return expire_date_;
     }
 
-    auto sign() const -> const Hash & {
+    auto sign() const -> const hash & {
       return sign_;
     }
 
@@ -40,8 +40,8 @@ namespace lickey {
     unsigned int num_lics_;
     date issue_date_;
     date expire_date_;
-    Hash sign_; ///< recoded
-    Hash check_sum_; ///< calculated
+    hash sign_; ///< recoded
+    hash check_sum_; ///< calculated
   };
 }
 #endif // FEATUREINFO_H

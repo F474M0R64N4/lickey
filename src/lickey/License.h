@@ -6,11 +6,11 @@
 
 namespace lickey {
   class license {
-    friend class LicenseManager;
+    friend class license_manager;
 
     char file_version_{};
     features features_;
-    HardwareKey key_;
+    hardware_key key_;
     Salt explicit_salt_;
     Salt implicit_salt_;
     date last_used_date_;

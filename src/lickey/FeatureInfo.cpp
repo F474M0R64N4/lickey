@@ -4,14 +4,14 @@
 
 
 namespace lickey {
-  FeatureInfo::FeatureInfo(): num_lics_(0) {
+  feature_info::feature_info(): num_lics_(0) {
   }
 
 
-  FeatureInfo::~FeatureInfo() = default;
+  feature_info::~feature_info() = default;
 
 
-  bool FeatureInfo::is_valid() const {
+  bool feature_info::is_valid() const {
     if (1 > num_lics_) {
       LOG(error) << "the number of license is zero";
       return false;
@@ -44,7 +44,7 @@ namespace lickey {
   }
 
 
-  bool FeatureInfo::is_expired() const {
+  bool feature_info::is_expired() const {
     date today;
     set_today(today);
     return today > expire_date_;

@@ -3,7 +3,7 @@
 
 namespace lickey {
   class feature_version {
-    friend class LicenseManager;
+    friend class license_manager;
 
    public:
     feature_version();

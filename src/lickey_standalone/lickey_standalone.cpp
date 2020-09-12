@@ -9,9 +9,9 @@ int main()
 	lickey::HardwareKeyGetter key_getter;
 	auto keys = key_getter();
 
-	lickey::LicenseManager license_manager("v", "a");
+	lickey::license_manager license_manager("v", "a");
 	lickey::license license;
-	license_manager.Load(R"(license)",
+	license_manager.load(R"(C:\Users\WORK\Desktop\lickey\src\lickey_gen\x64\Debug\vl(8613cff15aca54d4b41de733b957c9b84377c4cbe95d63f9e5dc3540cdabbce0))",
 	                     keys.front(), license);
 
 	if (license.feature_map().is_expired("full") == false)

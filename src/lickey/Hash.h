@@ -2,21 +2,21 @@
 #define HASH_H
 
 namespace lickey {
-  class Hash {
-    std::string hash;
+  class hash {
+    std::string hash_value_;
 
    public:
-    Hash();
-    Hash(const Hash &obj);
-    virtual ~Hash();
-    auto operator=(const Hash &obj) -> Hash&;
-    auto operator=(const std::string &other) -> Hash&;
+    hash();
+    hash(const hash &obj);
+    virtual ~hash();
+    auto operator=(const hash &obj) -> hash&;
+    auto operator=(const std::string &other) -> hash&;
 
-    auto operator==(const Hash &other) const -> bool;
-    auto operator!=(const Hash &other) const -> bool;
+    auto operator==(const hash &other) const -> bool;
+    auto operator!=(const hash &other) const -> bool;
 
-    auto Value() const -> std::string {
-      return hash;
+    auto value() const -> std::string {
+      return hash_value_;
     }
   };
 }

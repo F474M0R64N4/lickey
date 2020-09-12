@@ -4,24 +4,24 @@
 #include <utility>
 
 namespace lickey {
-  HardwareKey::HardwareKey() = default;
+  hardware_key::hardware_key() = default;
 
-  HardwareKey::HardwareKey(const HardwareKey &obj) = default;
+  hardware_key::hardware_key(const hardware_key &obj) = default;
 
 
-  HardwareKey::HardwareKey(std::string obj)
-    : key(std::move(obj)) {
+  hardware_key::hardware_key(std::string obj)
+    : key_(std::move(obj)) {
   }
 
 
-  HardwareKey::~HardwareKey() = default;
+  hardware_key::~hardware_key() = default;
 
 
-  HardwareKey &HardwareKey::operator=(const HardwareKey &obj) = default;
+  hardware_key &hardware_key::operator=(const hardware_key &obj) = default;
 
 
-  HardwareKey &HardwareKey::operator=(const std::string &obj) {
-    key = obj;
+  hardware_key &hardware_key::operator=(const std::string &obj) {
+    key_ = obj;
     return *this;
   }
 }

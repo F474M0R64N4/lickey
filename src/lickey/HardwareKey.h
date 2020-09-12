@@ -2,25 +2,25 @@
 #define HARDWAREKEY_H
 
 namespace lickey {
-  class HardwareKey final {
+  class hardware_key final {
     friend class HardwareKeyGetter;
 
    public:
-    HardwareKey();
-    HardwareKey(const HardwareKey &obj);
-    explicit HardwareKey(std::string obj);
-    ~HardwareKey();
-    auto operator=(const HardwareKey &obj) -> HardwareKey&;
-    auto operator=(const std::string &obj) -> HardwareKey&;
+    hardware_key();
+    hardware_key(const hardware_key &obj);
+    explicit hardware_key(std::string obj);
+    ~hardware_key();
+    auto operator=(const hardware_key &obj) -> hardware_key&;
+    auto operator=(const std::string &obj) -> hardware_key&;
 
-    auto Value() const -> std::string {
-      return key;
+    auto value() const -> std::string {
+      return key_;
     }
 
    private:
-    std::string key;
+    std::string key_;
   };
 
-  using HardwareKeys = std::vector<HardwareKey>;
+  using hardware_keys = std::vector<hardware_key>;
 }
 #endif // HARDWAREKEY_H

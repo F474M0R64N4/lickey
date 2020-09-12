@@ -17,9 +17,9 @@ namespace lickey
 
 	HardwareKeyGetter::~HardwareKeyGetter() = default;
 
-	auto HardwareKeyGetter::operator()() const -> HardwareKeys
+	auto HardwareKeyGetter::operator()() const -> hardware_keys
 	{
-		HardwareKeys keys;
+		hardware_keys keys;
 
 		// Query size of SMBIOS data.
 		const DWORD smbios_data_size = GetSystemFirmwareTable('RSMB', 0, nullptr, 0);
@@ -42,8 +42,8 @@ namespace lickey
 
 			auto sha256_value = to_hex(make_hash(hash_t::sha256, hardware));
 
-			HardwareKey key;
-			key.key = move(sha256_value);
+			hardware_key key;
+			key.key_ = move(sha256_value);
 			keys.push_back(key);
 
 			return keys;

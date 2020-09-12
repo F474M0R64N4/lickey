@@ -4,9 +4,9 @@
 #include <Date.h>
 #include <boost/test/included/unit_test.hpp>
 
-BOOST_AUTO_TEST_SUITE(Date)
+BOOST_AUTO_TEST_SUITE(date)
 
-BOOST_AUTO_TEST_CASE(Constructor01)
+BOOST_AUTO_TEST_CASE(constructor01)
 {
 	const lickey::date date(2017, 2, 28);
 
@@ -15,14 +15,14 @@ BOOST_AUTO_TEST_CASE(Constructor01)
     BOOST_CHECK_EQUAL(28, date.day());
 }
 
-BOOST_AUTO_TEST_CASE(Constructor02)
+BOOST_AUTO_TEST_CASE(constructor02)
 {
     lickey::date date;
     lickey::load(date, "20170228");
     BOOST_CHECK_EQUAL("20170228", lickey::to_string(date));
 }
 
-BOOST_AUTO_TEST_CASE(EQ01)
+BOOST_AUTO_TEST_CASE(eq01)
 {
 	const lickey::date date1(2017, 2, 28);
     lickey::date date2;

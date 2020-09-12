@@ -9,7 +9,7 @@ namespace lickey {
     HardwareKeyGetter();
     virtual ~HardwareKeyGetter();
 
-  	auto operator()() const -> HardwareKeys;
+  	auto operator()() const -> hardware_keys;
     auto parse(DWORD smbios_data_size, void* heap_handle, smbios::raw_smbios_data* smbios_data,
                std::string& hardware) const -> void;
 

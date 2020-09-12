@@ -3,9 +3,9 @@
 #include "FeatureInfo.h"
 
 namespace lickey {
-  class Hash;
+  class hash;
 
-  class features : public std::map<std::string, FeatureInfo> {
+  class features : public std::map<std::string, feature_info> {
    public:
     auto is_valid(const std::string &feature_name) const -> bool;
     auto is_expired(const std::string &feature_name) const -> bool;

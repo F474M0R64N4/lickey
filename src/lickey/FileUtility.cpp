@@ -6,7 +6,8 @@
 
 
 namespace lickey {
-  std::string GetExtension(const std::string &filePath) {
+	auto get_extension(const std::string& filePath) -> std::string
+	{
 	  const auto pos = filePath.find_last_of('.');
 
     if (std::string::npos == pos) {
@@ -17,7 +18,8 @@ namespace lickey {
   }
 
 
-  std::string GetBaseFilePath(const std::string &filePath) {
+	auto get_base_file_path(const std::string& filePath) -> std::string
+	{
 	  const auto pos = filePath.find_last_of('.');
 
     if (std::string::npos == pos) {
@@ -28,7 +30,8 @@ namespace lickey {
   }
 
 
-  std::string GetFolderPath(const std::string &filePath) {
+	auto get_folder_path(const std::string& filePath) -> std::string
+	{
 	  const auto pos = filePath.find_last_of('\\');
 
     if (std::string::npos == pos) {
@@ -39,7 +42,8 @@ namespace lickey {
   }
 
 
-  std::string GetFilename(const std::string &filePath) {
+	auto get_filename(const std::string& filePath) -> std::string
+	{
 	  const auto pos = filePath.find_last_of('\\');
 
     if (std::string::npos == pos) {
@@ -50,21 +54,24 @@ namespace lickey {
   }
 
 
-  std::string GetExeFilePath() {
-    static const auto BUF_SIZE = 2048;
-    char path[BUF_SIZE];
-    const auto status = GetModuleFileName(nullptr, path, BUF_SIZE);
+	auto get_exe_file_path() -> std::string
+	{
+    static const auto buf_size = 2048;
+    char path[buf_size];
+    const auto status = GetModuleFileName(nullptr, path, buf_size);
     assert(0 != status);
     return path;
   }
 
 
-  std::string GetExeFolderPath() {
-    return GetFolderPath(GetExeFilePath());
+	auto get_exe_folder_path() -> std::string
+	{
+    return get_folder_path(get_exe_file_path());
   }
 
 
-  std::string GivePostfix(const std::string &filepath, const std::string &postfix) {
+	auto give_postfix(const std::string& filepath, const std::string& postfix) -> std::string
+	{
 	  const auto pos = filepath.find_last_of('.');
 	  auto ans = std::string::npos == pos
 		             ? filepath + "_" + postfix
@@ -73,18 +80,20 @@ namespace lickey {
   }
 
 
-  std::string ChangeExtension(const std::string &filepath, const std::string &newExt) {
+	auto change_extension(const std::string& filepath, const std::string& new_ext) -> std::string
+	{
 	  const auto pos = filepath.find_last_of('.');
 
     if (std::string::npos == pos) {
-      return filepath + "." + newExt;
+      return filepath + "." + new_ext;
     }
 
-    return filepath.substr(0, pos) + "." + newExt;
+    return filepath.substr(0, pos) + "." + new_ext;
   }
 
 
-  std::string JoinPath(const std::string &folderpath, const std::string &filepath) {
+	auto join_path(const std::string& folderpath, const std::string& filepath) -> std::string
+	{
     if (folderpath.empty()) {
       return filepath;
     }
@@ -97,7 +106,8 @@ namespace lickey {
   }
 
 
-  bool ReadLines(const std::string &filepath, std::vector<std::string> &lines) {
+	auto read_lines(const std::string& filepath, std::vector<std::string>& lines) -> bool
+	{
     std::ifstream in(filepath.c_str());
 
     if (in)

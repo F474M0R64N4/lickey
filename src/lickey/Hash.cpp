@@ -3,32 +3,32 @@
 
 
 namespace lickey {
-  Hash::Hash()
-    : hash("") {
+  hash::hash()
+    : hash_value_("") {
   }
 
 
-  Hash::Hash(const Hash &obj) = default;
+  hash::hash(const hash &obj) = default;
 
 
-  Hash::~Hash()  = default;
+  hash::~hash()  = default;
 
 
-  Hash &Hash::operator=(const Hash &obj)  = default;
+  hash &hash::operator=(const hash &obj)  = default;
 
 
-  Hash &Hash::operator=(const std::string &other) {
-    hash = other;
+  hash &hash::operator=(const std::string &other) {
+    hash_value_ = other;
     return *this;
   }
 
 
-  bool Hash::operator==(const Hash &other) const {
-    return other.hash == hash;
+  bool hash::operator==(const hash &other) const {
+    return other.hash_value_ == hash_value_;
   }
 
 
-  bool Hash::operator!=(const Hash &other) const {
+  bool hash::operator!=(const hash &other) const {
     return !(*this == other);
   }
 }

@@ -24,7 +24,7 @@ namespace
 
 	auto add_feature(
 		const std::string& feature_name,
-		const std::string& feature_version,
+		const std::string& feature_ver,
 		const date& issue,
 		const std::string& expire_date,
 		const unsigned int num_lics,
@@ -35,10 +35,10 @@ namespace
 		if (load(expire, expire_date))
 		{
 			feature_version version;
-			version = feature_version;
-			LicenseManager::Add(feature_name, version, issue, expire, num_lics, lic);
+			version = feature_ver;
+			license_manager::add(feature_name, version, issue, expire, num_lics, lic);
 			std::cout << "done to add feature = " << feature_name << "\n";
-			std::cout << "  version = " << feature_version << "\n";
+			std::cout << "  version = " << feature_ver << "\n";
 			std::cout << "  issue date = " << to_string(issue) << "\n";
 			std::cout << "  expire date = " << expire_date << "\n";
 			std::cout << "  num licenses = " << num_lics << "\n";
@@ -64,11 +64,11 @@ auto main(int argc, char* argv[]) -> int
 	std::cout << "application name:";
 	std::cin >> app_name;
 	boost::trim(app_name);
-	std::string hardware_key;
+	std::string hwid;
 	std::cout << "hardware key(sha256 format):";
-	std::cin >> hardware_key;
-	boost::trim(hardware_key);
-	LicenseManager lic_mgr(vendor_name, app_name);
+	std::cin >> hwid;
+	boost::trim(hwid);
+	license_manager lic_mgr(vendor_name, app_name);
 	license lic;
 
 	do
@@ -159,12 +159,12 @@ auto main(int argc, char* argv[]) -> int
 			break;
 		}
 
-		auto base_filepath = GetBaseFilePath(filepath);
-		auto extension = GetExtension(filepath);
+		auto base_filepath = get_base_file_path(filepath);
+		auto extension = get_extension(filepath);
 		std::stringstream filepath_impl;
-		filepath_impl << base_filepath << "(" << hardware_key << ")" << extension;
+		filepath_impl << base_filepath << "(" << hwid << ")" << extension;
 
-		if (lic_mgr.Save(filepath_impl.str(), HardwareKey(hardware_key), lic))
+		if (lic_mgr.save(filepath_impl.str(), hardware_key(hwid), lic))
 		{
 			std::cout << "done to save into = " << filepath_impl.str() << "\n";
 			break;
