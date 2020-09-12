@@ -334,13 +334,13 @@ namespace smbios
 
 		std::vector<header*> headers;
 
-		static byte_t* skip(byte_t*);
+		static auto skip(byte_t*) -> byte_t*;
 
-		static header* extract_strings(header*, string_array_t&);
+		static auto extract_strings(header*, string_array_t&) -> header*;
 
-		void feed(const void* raw_smbios, size_t size);
+		auto feed(const void* raw_smbios, size_t size) -> void;
 
-		void clear();
+		auto clear() -> void;
 
 	protected:
 		byte_t* raw_data_{};
@@ -348,32 +348,35 @@ namespace smbios
 		size_t raw_size_{};
 	};
 
-	inline byte_t* parser::skip(byte_t* x)
+	inline auto parser::skip(byte_t* x) -> byte_t*
 	{
 		auto* ptr = x + reinterpret_cast<header*>(x)->length_header;
 		size_t len;
 
-		if (*ptr == 0) ptr += 2;
+		if (*ptr == 0) { ptr += 2; }
 		else
+		{
 			do
 			{
 				len = strlen(reinterpret_cast<const char*>(ptr));
 				ptr += len + 1;
 			}
 			while (len > 0);
+		}
 
 		return ptr;
 	}
 
-	inline header* parser::extract_strings(header* x, string_array_t& a)
+	inline auto parser::extract_strings(header* x, string_array_t& a) -> header*
 	{
 		auto* ptr = reinterpret_cast<byte_t*>(x) + x->length_header;
 
 		a.clear();
 		a.push_back(nullptr);
 
-		if (*ptr == 0) ptr += 2;
+		if (*ptr == 0) { ptr += 2; }
 		else
+		{
 			for (;;)
 			{
 				auto* str = reinterpret_cast<char*>(ptr);
@@ -382,15 +385,18 @@ namespace smbios
 				ptr += len + 1;
 
 				if (len == 0)
+				{
 					break;
+				}
 
 				a.push_back(str);
 			}
+		}
 
 		return reinterpret_cast<header*>(ptr);
 	}
 
-	inline void parser::feed(const void* raw_smbios, const size_t size)
+	inline auto parser::feed(const void* raw_smbios, const size_t size) -> void
 	{
 		clear();
 
@@ -408,7 +414,7 @@ namespace smbios
 		}
 	}
 
-	inline void parser::clear()
+	inline auto parser::clear() -> void
 	{
 		headers.clear();
 		delete[] raw_data_;

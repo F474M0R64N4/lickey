@@ -150,7 +150,11 @@ namespace
 			{
 				is_in_data = !is_in_data;
 
-				if (is_in_data) continue;
+				if (is_in_data)
+				{
+					continue;
+				}
+				
 				break;
 			}
 

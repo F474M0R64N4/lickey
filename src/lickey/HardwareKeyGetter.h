@@ -10,8 +10,8 @@ namespace lickey {
     virtual ~hwid_getter();
 
   	auto operator()() const -> hardware_keys;
-    auto parse(DWORD smbios_data_size, void* heap_handle, smbios::raw_smbios_data* smbios_data,
-               std::string& hardware) const -> void;
+    static auto parse(DWORD smbios_data_size, void* heap_handle, smbios::raw_smbios_data* smbios_data,
+               std::string& hardware) -> void;
 
   };
 }
