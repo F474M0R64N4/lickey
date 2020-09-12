@@ -87,10 +87,10 @@
     <ClInclude Include="Version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="smbios.hpp">
+    <ClInclude Include="Hash.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hash.h">
+    <ClInclude Include="Smbios.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

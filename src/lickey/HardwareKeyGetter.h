@@ -1,7 +1,7 @@
 #ifndef HARDWAREKEYGETTER_H
 #define HARDWAREKEYGETTER_H
 #include "HardwareKey.h"
-#include "smbios.hpp"
+#include "Smbios.h"
 
 namespace lickey
 {

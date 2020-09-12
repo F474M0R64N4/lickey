@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "HardwareKeyGetter.h"
 
-#include "smbios.hpp"
+#include "Smbios.h"
 
 #include <Windows.h>
 
