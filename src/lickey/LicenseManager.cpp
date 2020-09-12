@@ -242,7 +242,7 @@ namespace
 				//unsigned char decryptedImpl[BUF_SIZE] = {'\0'};
 				std::string decryptedImpl;
 				//размер расшифрованных данных
-				size_t decryptedImplSize = buf_size;
+				const size_t decryptedImplSize = buf_size;
 				// расшифровываем данные
 				Decrypt(data, encryptionKey, encryptionIv, decryptedImpl);
 				//char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
@@ -373,7 +373,7 @@ return false;
 			dataSection.read(static_cast<char*>(&license.fileVersion), sizeof(unsigned int));
 			const auto saltLengthInBase64 = CalcBase64EncodedSize(4);
 			// соль лицензии
-			auto salt = static_cast<char*>(malloc(
+			auto *salt = static_cast<char*>(malloc(
 				static_cast<size_t>(sizeof(char) * static_cast<size_t>(saltLengthInBase64) + 1)));
 
 			if (salt == nullptr)
@@ -400,7 +400,7 @@ return false;
 			}
 
 			// выделим память остальные данные лицензии
-			auto base64Encrypted = static_cast<char*>(malloc(
+			auto *base64Encrypted = static_cast<char*>(malloc(
 				static_cast<size_t>(sizeof(char) * static_cast<size_t>(remainLen) + 1)));
 
 			if (base64Encrypted == nullptr)
