@@ -219,27 +219,23 @@ namespace
 			if (make_encryption_iv(dl.key, dl.explicit_salt, encryption_key, encryption_iv))
 			{
 				// буфер для расшифрованных данных
-				//unsigned char decryptedImpl[BUF_SIZE] = {'\0'};
-				std::string decrypted_impl;
-				//размер расшифрованных данных
-				const size_t decrypted_impl_size = buf_size;
+				std::string decrypted;
 				// расшифровываем данные
-				decrypt(data, encryption_key, encryption_iv, decrypted_impl);
-				const auto valid_len = calc_base64_encoded_size(4) + 8;
+				decrypt(data, encryption_key, encryption_iv, decrypted);
 
-				if (static_cast<size_t>(valid_len) > decrypted_impl_size)
+				if (decrypted.empty())
 				{
 					LOG(error) << "invalid data section";
 					return false;
 				}
 
-				const auto salt_impl = decrypted_impl.substr(0, 8);
-				implicit_salt = salt_impl;
+				const auto salt = decrypted.substr(0, 8);
+				implicit_salt = salt;
 
 				// дата лицензии
-				const auto date_impl = decrypted_impl.substr(8, 16);
+				const auto date = decrypted.substr(8, 16);
 
-				if (load(last_used_date, date_impl))
+				if (load(last_used_date, date))
 				{
 					return true;
 				}
