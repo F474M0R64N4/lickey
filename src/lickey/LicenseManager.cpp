@@ -16,7 +16,6 @@ using namespace lickey;
 
 namespace
 {
-	const unsigned int buf_size = 65536;
 	const std::string data_section_delimiter = "***";
 
 	using el = struct encrypt_license
@@ -38,16 +37,6 @@ namespace
 		hash first_feature_sign;
 		salt explicit_salt;
 	};
-
-	auto calc_base64_encoded_size(const int orig_data_size) -> int
-	{
-		const auto num_blocks6 = (orig_data_size * 8 + 5) / 6; // the number of blocks (6 bits per a block, rounding up)
-		const auto num_blocks4 = (num_blocks6 + 3) / 4; // the number of blocks (4 characters per a block, rounding up)
-		const auto num_net_chars = num_blocks4 * 4; // the number of characters without carriage return
-		return num_net_chars + ((num_net_chars / 76) * 2);
-		// the number of encoded characters (76 characters per line, currently only for carriage return)
-	}
-
 
 	auto convert(const std::string& feature_name, const feature_info& feature_info) -> std::string
 	{
