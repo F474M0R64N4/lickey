@@ -3,8 +3,8 @@
 
 namespace lickey
 {
-	//auto get_extension(const std::string& filepath) -> std::string;
-	//auto get_base_file_path(const std::string& filepath) -> std::string;
+	auto get_extension(const std::string& filepath) -> std::string;
+	auto get_base_file_path(const std::string& filepath) -> std::string;
 	//auto get_filename(const std::string& filepath) -> std::string;
 	auto get_folder_path(const std::string& filepath) -> std::string;
 	auto get_exe_file_path() -> std::string;

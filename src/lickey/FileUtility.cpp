@@ -6,29 +6,29 @@
 
 namespace lickey
 {
-//	auto get_extension(const std::string& filePath) -> std::string
-//	{
-//		const auto pos = filePath.find_last_of('.');
-//
-//		if (std::string::npos == pos)
-//		{
-//			return "";
-//		}
-//
-//		return filePath.substr(pos, filePath.size() - pos);
-//	}
+	auto get_extension(const std::string& filePath) -> std::string
+	{
+		const auto pos = filePath.find_last_of('.');
 
-//	auto get_base_file_path(const std::string& filePath) -> std::string
-//	{
-//		const auto pos = filePath.find_last_of('.');
-//
-//		if (std::string::npos == pos)
-//		{
-//			return filePath;
-//		}
-//
-//		return filePath.substr(0, pos);
-//	}
+		if (std::string::npos == pos)
+		{
+			return "";
+		}
+
+		return filePath.substr(pos, filePath.size() - pos);
+	}
+
+	auto get_base_file_path(const std::string& filePath) -> std::string
+	{
+		const auto pos = filePath.find_last_of('.');
+
+		if (std::string::npos == pos)
+		{
+			return filePath;
+		}
+
+		return filePath.substr(0, pos);
+	}
 
 	auto get_folder_path(const std::string& filePath) -> std::string
 	{
