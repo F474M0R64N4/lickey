@@ -142,8 +142,8 @@ int main(int argc, char *argv[]) {
       break;
     }
 
-    std::string baseFilepath = GetBaseFilePath(filepath);
-    std::string extension = GetExtension(filepath);
+    auto baseFilepath = GetBaseFilePath(filepath);
+    auto extension = GetExtension(filepath);
     std::stringstream filepathImpl;
     filepathImpl << baseFilepath << "(" << hardwareKey << ")" << extension;
 

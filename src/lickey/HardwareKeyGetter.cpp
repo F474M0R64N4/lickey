@@ -98,7 +98,7 @@ namespace lickey {
 
 	  HeapFree(heap_handle, 0, smbios_data);
 
-	  std::string sha256_value = to_hex(make_hash(hash_t::sha256, hardware));
+	  auto sha256_value = to_hex(make_hash(hash_t::sha256, hardware));
 
 	  HardwareKey key;
 	  key.key = move(sha256_value);

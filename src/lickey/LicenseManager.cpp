@@ -45,9 +45,9 @@ namespace
 
 	auto CalcBase64EncodedSize(const int origDataSize) -> int
 	{
-		const int numBlocks6 = (origDataSize * 8 + 5) / 6; // the number of blocks (6 bits per a block, rounding up)
-		const int numBlocks4 = (numBlocks6 + 3) / 4; // the number of blocks (4 characters per a block, rounding up)
-		const int numNetChars = numBlocks4 * 4; // the number of characters without carriage return
+		const auto numBlocks6 = (origDataSize * 8 + 5) / 6; // the number of blocks (6 bits per a block, rounding up)
+		const auto numBlocks4 = (numBlocks6 + 3) / 4; // the number of blocks (4 characters per a block, rounding up)
+		const auto numNetChars = numBlocks4 * 4; // the number of characters without carriage return
 		return numNetChars + ((numNetChars / 76) * 2);
 		// the number of encoded characters (76 characters per line, currently only for carriage return)
 	}
@@ -113,7 +113,7 @@ namespace
 			}
 			else
 			{
-				std::string key = subTokens.front();
+				auto key = subTokens.front();
 				std::transform(key.begin(), key.end(), key.begin(), tolower);
 				tree[key] = subTokens[1];
 			}
@@ -128,7 +128,7 @@ namespace
 		// проверим разделитель в строке
 		const auto isDataDelimiter = [](const std::string& line)
 		{
-			const std::string::size_type pos = line.find_first_of(data_section_delimiter);
+			const auto pos = line.find_first_of(data_section_delimiter);
 
 			if (std::string::npos == pos)
 			{
@@ -142,8 +142,8 @@ namespace
 
 			return true;
 		};
-		bool doesDataExist = false;
-		bool isInData = false;
+		auto doesDataExist = false;
+		auto isInData = false;
 		std::string dataStream; // буфер под лицензию
 
 		for (const auto& line : lines)
@@ -248,7 +248,7 @@ namespace
 				//char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
 				//boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
 				//std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
-				const int validLen = CalcBase64EncodedSize(4) + 8;
+				const auto validLen = CalcBase64EncodedSize(4) + 8;
 
 				if (static_cast<size_t>(validLen) > decryptedImplSize)
 				{
@@ -257,11 +257,11 @@ namespace
 				}
 
 				//boost::scoped_array<char> scopedSaltImpl(saltImpl);
-				const std::string salt_impl = decryptedImpl.substr(0, 8);
+				const auto salt_impl = decryptedImpl.substr(0, 8);
 				implicitSalt = salt_impl;
 
 				// дата лицензии
-				const std::string date_impl = decryptedImpl.substr(8, 16);
+				const auto date_impl = decryptedImpl.substr(8, 16);
 
 				if (Load(lastUsedDate, date_impl))
 					return true;
@@ -286,7 +286,7 @@ namespace
 
 			if (MakeEncryptionIv(el.key, el.explicitSalt, encryptionKey, encryptionIv))
 			{
-				const std::string strDate = ToString(el.lastUsedDate);
+				const auto strDate = ToString(el.lastUsedDate);
 				assert(8 == strDate.size());
 				std::ostringstream dst(std::ios::binary);
 				dst.write(el.implicitSalt.Value().c_str(), sizeof(char) * el.implicitSalt.Value().size());
@@ -358,7 +358,7 @@ namespace lickey
 
 		if (FindDataSection(lines, data))
 		{
-			int decodedSize = 0;
+			auto decodedSize = 0;
 			std::string decoded; // дешифрованная лицензия
 			DecodeBase64(data, decoded, decodedSize);
 			// boost::scoped_array<unsigned char> scopedDecoded(decoded.c_str());
@@ -371,9 +371,9 @@ return false;
 			               dataBuffer.begin(), IntoChar);
 			std::istringstream dataSection(dataBuffer, std::ios::binary);
 			dataSection.read(static_cast<char*>(&license.fileVersion), sizeof(unsigned int));
-			const int saltLengthInBase64 = CalcBase64EncodedSize(4);
+			const auto saltLengthInBase64 = CalcBase64EncodedSize(4);
 			// соль лицензии
-			char* salt = static_cast<char*>(malloc(
+			auto salt = static_cast<char*>(malloc(
 				static_cast<size_t>(sizeof(char) * static_cast<size_t>(saltLengthInBase64) + 1)));
 
 			if (salt == nullptr)
@@ -391,7 +391,7 @@ return false;
 			}
 
 			// оставшееся количество символов в лицензии
-			const int remainLen = decodedSize - saltLengthInBase64 - static_cast<int>(sizeof(unsigned int));
+			const auto remainLen = decodedSize - saltLengthInBase64 - static_cast<int>(sizeof(unsigned int));
 
 			if (1 > remainLen)
 			{
@@ -400,7 +400,7 @@ return false;
 			}
 
 			// выделим память остальные данные лицензии
-			char* base64Encrypted = static_cast<char*>(malloc(
+			auto base64Encrypted = static_cast<char*>(malloc(
 				static_cast<size_t>(sizeof(char) * static_cast<size_t>(remainLen) + 1)));
 
 			if (base64Encrypted == nullptr)
@@ -413,7 +413,7 @@ return false;
 				dataSection.read(base64Encrypted, static_cast<int>(sizeof(char)) * remainLen);
 				const auto it = static_cast<size_t>(remainLen); //memsize
 				base64Encrypted[it] = '\0';
-				int decoded_size = 0;
+				auto decoded_size = 0;
 				std::string decoded_; // буфер под дешифрованную лицензию
 				std::string bse(base64Encrypted);
 				DecodeBase64(bse, decoded_, decoded_size); // дешифруем лицензию из base64 формата
@@ -515,7 +515,7 @@ return false;
 		{
 			std::ostringstream dataSection(std::ios::binary);
 			char fileVersion = VERSION();
-			const std::string explictSaltValue = loadedLicense.explicitSalt.Value();
+			const auto explictSaltValue = loadedLicense.explicitSalt.Value();
 			dataSection.write(static_cast<const char*>(&fileVersion), sizeof(unsigned int));
 			dataSection.write(explictSaltValue.c_str(), sizeof(char) * explictSaltValue.size());
 			dataSection.write(encrypted.c_str(), sizeof(char) * encrypted.size());

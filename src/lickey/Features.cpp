@@ -4,7 +4,7 @@
 
 namespace lickey {
   bool Features::IsValid(const std::string &featureName) const {
-    const const_iterator cit = (*this).find(featureName);
+    const auto cit = (*this).find(featureName);
 
     if (end() == cit) {
       LOG(error) << featureName << " to be checked validity not exist";
@@ -16,7 +16,7 @@ namespace lickey {
 
 
   bool Features::IsExpired(const std::string &featureName) const {
-    const const_iterator cit = (*this).find(featureName);
+    const auto cit = (*this).find(featureName);
 
     if (end() == cit) {
       LOG(error) << featureName << " to be checked expire date not exist";
@@ -28,7 +28,7 @@ namespace lickey {
 
 
   bool Features::IsExist(const std::string &featureName) const {
-    const const_iterator cit = (*this).find(featureName);
+    const auto cit = (*this).find(featureName);
     return end() != cit;
   }
 }
