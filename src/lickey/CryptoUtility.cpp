@@ -12,14 +12,16 @@ namespace lickey
 {
 	auto encrypt(const std::string& data, std::string key, const std::string& iv, std::string& dest) -> bool
 	{
-		const auto ciphered_buffer = cipher::encrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
+		const auto ciphered_buffer =
+			cipher::encrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
 		dest = ciphered_buffer;
 		return true;
 	}
 
 	auto decrypt(const std::string& data, std::string key, const std::string& iv, std::string& dest) -> bool
 	{
-		const auto decrypted_buffer = cipher::decrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key), data);
+		const auto decrypted_buffer = cipher::decrypt(cipher_t::aes_256_cbc, padding_t::pkcs7, iv, key.append(key),
+		                                              data);
 		dest = decrypted_buffer;
 		return true;
 	}

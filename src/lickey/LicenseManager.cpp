@@ -154,7 +154,7 @@ namespace
 				{
 					continue;
 				}
-				
+
 				break;
 			}
 
@@ -178,7 +178,8 @@ namespace
 		std::string& encryption_key) -> bool
 	{
 		std::string src;
-		src.append(key.value()).append(explicit_salt.value()).append(vendor_name).append(app_name).append(first_feature_sign.value());
+		src.append(key.value()).append(explicit_salt.value()).append(vendor_name).append(app_name).append(
+			first_feature_sign.value());
 		md5(src, encryption_key);
 		return true;
 	}
@@ -207,9 +208,10 @@ namespace
 		hash& sign) -> bool
 	{
 		std::string src;
-		src.append(feature_name).append(feature_info.version().value()).append(to_string(feature_info.issue_date())).append(
-			to_string(feature_info.expire_date())).append(std::to_string(feature_info.num_lics())).append(
-			implicit_salt.value());
+		src.append(feature_name).append(feature_info.version().value()).append(to_string(feature_info.issue_date())).
+		    append(
+			    to_string(feature_info.expire_date())).append(std::to_string(feature_info.num_lics())).append(
+			    implicit_salt.value());
 		std::string sha;
 		sha256(src, sha);
 		std::string encoded_sign;
@@ -230,7 +232,8 @@ namespace
 		std::string encryption_key;
 
 		// создадим ключ расшифровки
-		if (make_encryption_key(dl.key, dl.vendor_name, dl.app_name, dl.first_feature_sign, dl.explicit_salt, encryption_key))
+		if (make_encryption_key(dl.key, dl.vendor_name, dl.app_name, dl.first_feature_sign, dl.explicit_salt,
+		                        encryption_key))
 		{
 			// буфер для ключа инициализации
 			std::string encryption_iv;
@@ -259,7 +262,8 @@ namespace
 				// дата лицензии
 				const auto date_impl = decrypted_impl.substr(8, 16);
 
-				if (load(last_used_date, date_impl)){
+				if (load(last_used_date, date_impl))
+				{
 					return true;
 				}
 				LOG(error) << "fail to decrypt date because of invalid date";
@@ -277,7 +281,8 @@ namespace
 	{
 		std::string encryption_key;
 
-		if (make_encryption_key(el.key, el.vendor_name, el.app_name, el.first_feature_sign, el.explicit_salt, encryption_key))
+		if (make_encryption_key(el.key, el.vendor_name, el.app_name, el.first_feature_sign, el.explicit_salt,
+		                        encryption_key))
 		{
 			std::string encryption_iv;
 
@@ -304,8 +309,9 @@ namespace
 
 namespace lickey
 {
-	license_manager::license_manager(std::string vn, std::string an) : vendor_name_(std::move(vn)), app_name_(std::move(an)),
-	                                                                 is_license_loaded_(false)
+	license_manager::license_manager(std::string vn, std::string an) : vendor_name_(std::move(vn)),
+	                                                                   app_name_(std::move(an)),
+	                                                                   is_license_loaded_(false)
 	{
 	}
 
@@ -346,7 +352,7 @@ namespace lickey
 	}
 
 	auto license_manager::is_license_data_section_read(const hardware_key& key, license& license,
-	                                              const std::vector<std::string>& lines) -> bool
+	                                                   const std::vector<std::string>& lines) -> bool
 	{
 		// буфер под лицензию
 		std::string data;
@@ -363,7 +369,7 @@ namespace lickey
 			data_section.read(static_cast<char*>(&license.file_version_), sizeof(unsigned int));
 			const auto salt_length_in_base64 = calc_base64_encoded_size(4);
 			// соль лицензии
-			auto *salt = static_cast<char*>(malloc(
+			auto* salt = static_cast<char*>(malloc(
 				static_cast<size_t>(sizeof(char) * static_cast<size_t>(salt_length_in_base64) + 1)));
 
 			if (salt == nullptr)
@@ -389,7 +395,7 @@ namespace lickey
 			}
 
 			// выделим память остальные данные лицензии
-			auto *base64_encrypted = static_cast<char*>(malloc(
+			auto* base64_encrypted = static_cast<char*>(malloc(
 				static_cast<size_t>(sizeof(char) * static_cast<size_t>(remain_len) + 1)));
 
 			if (base64_encrypted == nullptr)
@@ -415,7 +421,8 @@ namespace lickey
 		return false;
 	}
 
-	auto license_manager::is_license_read(const std::string& filepath, const hardware_key& key, license& license) -> bool
+	auto license_manager::is_license_read(const std::string& filepath, const hardware_key& key,
+	                                      license& license) -> bool
 	{
 		std::vector<std::string> lines;
 

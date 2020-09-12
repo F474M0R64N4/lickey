@@ -57,7 +57,7 @@ namespace lickey
 
 	private:
 		static auto convert_feature(const std::string& line, std::string& feature_name,
-		                           feature_info& feature_info) -> bool;
+		                            feature_info& feature_info) -> bool;
 	};
 }
 #endif // LICENSEMANAGER_H

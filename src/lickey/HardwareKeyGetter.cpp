@@ -52,7 +52,7 @@ namespace lickey
 	}
 
 	inline auto hwid_getter::parse(const DWORD smbios_data_size, void* const heap_handle,
-	                              raw_smbios_data* const smbios_data, std::string& hardware) -> void
+	                               raw_smbios_data* const smbios_data, std::string& hardware) -> void
 	{
 		// Process the SMBIOS data and free the memory under an exit label
 		parser meta;
@@ -72,7 +72,8 @@ namespace lickey
 				{
 					auto* const x = reinterpret_cast<baseboard_info*>(header);
 
-					if (static_cast<int>(x->length_header) == 0) {
+					if (static_cast<int>(x->length_header) == 0)
+					{
 						break;
 					}
 
@@ -85,7 +86,8 @@ namespace lickey
 				{
 					auto* const x = reinterpret_cast<bios_info*>(header);
 
-					if (static_cast<int>(x->length_header) == 0) {
+					if (static_cast<int>(x->length_header) == 0)
+					{
 						break;
 					}
 					hardware.append(strings[x->vendor]);
@@ -97,7 +99,8 @@ namespace lickey
 				{
 					auto* const x = reinterpret_cast<proc_info*>(header);
 
-					if (static_cast<int>(x->length_header) == 0) {
+					if (static_cast<int>(x->length_header) == 0)
+					{
 						break;
 					}
 					hardware.append(strings[x->manufacturer]);
