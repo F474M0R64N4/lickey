@@ -197,7 +197,6 @@ namespace
 		encode_base64(encryption_key, encoded_key);
 		std::string src;
 		src.append(encoded_key).append(key.value()).append(explicit_salt.value());
-		//MD5(src.str().c_str(), src.str().size(), encryptionIv);
 		md5(src, encryption_iv);
 		return true;
 	}
