@@ -467,20 +467,13 @@ namespace lickey
 		// зашифруем данные
 		if (encrypt_data(encrypt_license, encrypted))
 		{
-			std::ostringstream data_section(std::ios::binary);
-			std::string file_version = LICENSE_VERSION();
-			const auto explicit_salt_value = loaded_license_.explicit_salt_.value();
-			//data_section.write(static_cast<const char*>(&file_version), sizeof(unsigned int));
-			//data_section.write(explicit_salt_value.c_str(), sizeof(char) * explicit_salt_value.size());
-			//data_section.write(encrypted.c_str(), sizeof(char) * encrypted.size());
 			// make json string
 			json ds;
-			ds["version"] = file_version;
-			ds["explicit_salt"] = explicit_salt_value;
+			ds["version"] = LICENSE_VERSION();
+			ds["explicit_salt"] = loaded_license_.explicit_salt_.value();
 			ds["encrypted"] = encrypted;
-			std::string ds_string;
-			ds_string.append(ds.dump());
-			encode_base64(ds_string, encrypted);
+			const auto data_section = ds.dump();
+			encode_base64(data_section, encrypted);
 			// запись в файл
 			std::ofstream out(license_filepath_.c_str());
 
