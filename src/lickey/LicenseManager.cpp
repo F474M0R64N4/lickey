@@ -86,9 +86,7 @@ namespace
 		boost::for_each(tokens, trim);
 	}
 
-	auto make_feature_tree(
-		const std::vector<std::string>& tokens,
-		feature_tree& tree) -> void
+	auto make_feature_tree(const std::vector<std::string>& tokens, feature_tree& tree) -> void
 	{
 		for (const auto& token : tokens)
 		{
@@ -120,9 +118,7 @@ namespace
 	}
 
 
-	auto find_data_section(
-		const std::vector<std::string>& lines,
-		std::string& data) -> bool
+	auto find_data_section(const std::vector<std::string>& lines, std::string& data) -> bool
 	{
 		// проверим разделитель в строке
 		const auto is_data_delimiter = [](const std::string& line)
@@ -171,13 +167,9 @@ namespace
 		return does_data_exist; // возвратим флаг
 	}
 
-	auto make_encryption_key(
-		const hardware_key& key,
-		const std::string& vendor_name,
-		const std::string& app_name,
-		const hash& first_feature_sign,
-		const salt& explicit_salt,
-		std::string& encryption_key) -> bool
+	auto make_encryption_key(const hardware_key& key, const std::string& vendor_name, const std::string& app_name,
+	                         const hash& first_feature_sign, const salt& explicit_salt,
+	                         std::string& encryption_key) -> bool
 	{
 		std::string src;
 		src.append(key.value()).append(explicit_salt.value()).append(vendor_name).append(app_name).append(
@@ -187,11 +179,8 @@ namespace
 	}
 
 
-	auto make_encryption_iv(
-		const hardware_key& key,
-		const salt& explicit_salt,
-		std::string& encryption_key,
-		std::string& encryption_iv) -> bool
+	auto make_encryption_iv(const hardware_key& key, const salt& explicit_salt, std::string& encryption_key,
+	                        std::string& encryption_iv) -> bool
 	{
 		std::string encoded_key;
 		encode_base64(encryption_key, encoded_key);
@@ -202,11 +191,8 @@ namespace
 	}
 
 
-	auto make_feature_sign(
-		const std::string& feature_name,
-		const feature_info& feature_info,
-		const salt& implicit_salt,
-		hash& sign) -> bool
+	auto make_feature_sign(const std::string& feature_name, const feature_info& feature_info, const salt& implicit_salt,
+	                       hash& sign) -> bool
 	{
 		std::string src;
 		src.append(feature_name).append(feature_info.version().value()).append(to_string(feature_info.issue_date())).
@@ -222,12 +208,7 @@ namespace
 	}
 
 
-	auto decrypt_data(
-		const dl& dl,
-		salt& implicit_salt,
-		date& last_used_date,
-		const std::string& data
-	) -> bool
+	auto decrypt_data(const dl& dl, salt& implicit_salt, date& last_used_date, const std::string& data) -> bool
 	{
 		// буфер для ключа расшифровки
 		std::string encryption_key;
@@ -322,8 +303,7 @@ namespace lickey
 	}
 
 
-	auto license_manager::is_license_decrypt(const hardware_key& key, license& license,
-	                                         std::string& decoded) -> bool
+	auto license_manager::is_license_decrypt(const hardware_key& key, license& license, std::string& decoded) -> bool
 	{
 		dl decrypt_license; // структура дешифрованной лицензии
 		decrypt_license.key = key;
@@ -510,13 +490,9 @@ namespace lickey
 	}
 
 
-	void license_manager::add(
-		const std::string& feature_name,
-		const feature_version& feature_version,
-		const date& issue_date,
-		const date& expire_date,
-		const unsigned int num_lics,
-		license& license)
+	void license_manager::add(const std::string& feature_name, const feature_version& feature_version,
+	                          const date& issue_date, const date& expire_date, const unsigned int num_lics,
+	                          license& license)
 	{
 		feature_info info;
 		info.version_ = feature_version;
@@ -527,10 +503,8 @@ namespace lickey
 	}
 
 
-	auto license_manager::convert_feature(
-		const std::string& line,
-		std::string& feature_name,
-		feature_info& feature_info) -> bool
+	auto license_manager::convert_feature(const std::string& line, std::string& feature_name,
+	                                      feature_info& feature_info) -> bool
 	{
 		std::vector<std::string> tokens; // храним тут все токены
 		split(line, tokens); // из строки вытаскиваем все токены
