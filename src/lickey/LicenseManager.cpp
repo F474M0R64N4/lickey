@@ -15,8 +15,8 @@ namespace
 {
 	using namespace lickey;
 
-	const unsigned int BUF_SIZE = 65536;
-	const std::string DATA_SECTION_DELIMITER = "***";
+	const unsigned int buf_size = 65536;
+	const std::string data_section_delimiter = "***";
 
 	using EL = struct EncryptLicense
 	{
@@ -128,7 +128,7 @@ namespace
 		// проверим разделитель в строке
 		const auto isDataDelimiter = [](const std::string& line)
 		{
-			const std::string::size_type pos = line.find_first_of(DATA_SECTION_DELIMITER);
+			const std::string::size_type pos = line.find_first_of(data_section_delimiter);
 
 			if (std::string::npos == pos)
 			{
@@ -243,7 +243,7 @@ namespace
 				//unsigned char decryptedImpl[BUF_SIZE] = {'\0'};
 				std::string decryptedImpl;
 				//размер расшифрованных данных
-				size_t decryptedImplSize = BUF_SIZE;
+				size_t decryptedImplSize = buf_size;
 				// расшифровываем данные
 				Decrypt(data, encryptionKey, encryptionIv, decryptedImpl, decryptedImplSize);
 				//char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
@@ -293,7 +293,7 @@ namespace
 				dst.write(el.implicitSalt.Value().c_str(), sizeof(char) * el.implicitSalt.Value().size());
 				dst.write(strDate.c_str(), sizeof(char) * strDate.size());
 				std::string ecryptedImpl;
-				size_t ecryptedImplSize = BUF_SIZE;
+				size_t ecryptedImplSize = buf_size;
 				Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl, ecryptedImplSize);
 				/////////////
 				EncodeBase64(ecryptedImpl, encrypted);
@@ -534,9 +534,9 @@ return false;
 
 				// запишем обратно в файл новые данные
 				out << "\n";
-				out << DATA_SECTION_DELIMITER << "\n";
+				out << data_section_delimiter << "\n";
 				out << encrypted << "\n";
-				out << DATA_SECTION_DELIMITER << "\n";
+				out << data_section_delimiter << "\n";
 				out.close();
 				return true;
 			}
