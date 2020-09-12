@@ -10,7 +10,7 @@ namespace lickey
 	{
 		friend class license_manager;
 
-		char file_version_{};
+		std::string file_version_;
 		features features_;
 		hardware_key key_;
 		salt explicit_salt_;

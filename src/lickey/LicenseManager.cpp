@@ -9,11 +9,13 @@
 #include "FileUtility.h"
 #include "HardwareKeyGetter.h"
 #include "Version.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
+using namespace lickey;
 
 namespace
 {
-	using namespace lickey;
-
 	const unsigned int buf_size = 65536;
 	const std::string data_section_delimiter = "***";
 
@@ -358,62 +360,21 @@ namespace lickey
 
 		if (find_data_section(lines, data))
 		{
-			auto decoded_size = 0;
 			std::string decoded; // дешифрованная лицензия
-			decode_base64(data, decoded, decoded_size);
-			std::string data_buffer(decoded_size, '\0');
-			std::transform(decoded.c_str(), decoded.c_str() + static_cast<unsigned char>(decoded_size),
-			               data_buffer.begin(), into_char);
-			std::istringstream data_section(data_buffer, std::ios::binary);
-			data_section.read(static_cast<char*>(&license.file_version_), sizeof(unsigned int));
-			const auto salt_length_in_base64 = calc_base64_encoded_size(4);
-			// соль лицензии
-			auto* salt = static_cast<char*>(malloc(
-				static_cast<size_t>(sizeof(char) * static_cast<size_t>(salt_length_in_base64) + 1)));
+			decode_base64(data, decoded);
 
-			if (salt == nullptr)
-			{
-				assert(salt);
-			}
-			else
-			{
-				data_section.read(salt, static_cast<int>(sizeof(char)) * salt_length_in_base64);
-				const auto it = static_cast<size_t>(salt_length_in_base64); //memsize
-				salt[it] = '\0';
-				// "точная" соль лицензии
-				license.explicit_salt_ = salt;
-			}
+			// read from json
+			auto j = json::parse(decoded);
 
-			// оставшееся количество символов в лицензии
-			const auto remain_len = decoded_size - salt_length_in_base64 - static_cast<int>(sizeof(unsigned int));
+			std::string version = j["version"];
+			std::string encrypted = j["encrypted"];
 
-			if (1 > remain_len)
-			{
-				LOG(error) << "no encrypted data in data section";
-				return false;
-			}
+			license.explicit_salt_ = j["explicit_salt"];
 
-			// выделим память остальные данные лицензии
-			auto* base64_encrypted = static_cast<char*>(malloc(
-				static_cast<size_t>(sizeof(char) * static_cast<size_t>(remain_len) + 1)));
+			std::string buffer; // буфер под дешифрованную лицензию
+			decode_base64(encrypted, buffer); // дешифруем лицензию из base64 формата
 
-			if (base64_encrypted == nullptr)
-			{
-				assert(base64_encrypted);
-			}
-			else
-			{
-				data_section.read(base64_encrypted, static_cast<int>(sizeof(char)) * remain_len);
-				const auto it = static_cast<size_t>(remain_len); //memsize
-				base64_encrypted[it] = '\0';
-				decoded_size = 0;
-				std::string buffer; // буфер под дешифрованную лицензию
-				std::string bse(base64_encrypted);
-				decode_base64(bse, buffer, decoded_size); // дешифруем лицензию из base64 формата
-				return is_license_decrypt(key, license, buffer); // дешифруем лицензию
-			}
-
-			return false;
+			return is_license_decrypt(key, license, buffer); // дешифруем лицензию
 		}
 
 		LOG(error) << "no data sections"; // ошибка мол нет секции лицензии
@@ -507,12 +468,19 @@ namespace lickey
 		if (encrypt_data(encrypt_license, encrypted))
 		{
 			std::ostringstream data_section(std::ios::binary);
-			char file_version = LICENSE_VERSION();
+			std::string file_version = LICENSE_VERSION();
 			const auto explicit_salt_value = loaded_license_.explicit_salt_.value();
-			data_section.write(static_cast<const char*>(&file_version), sizeof(unsigned int));
-			data_section.write(explicit_salt_value.c_str(), sizeof(char) * explicit_salt_value.size());
-			data_section.write(encrypted.c_str(), sizeof(char) * encrypted.size());
-			encode_base64(data_section.str(), encrypted);
+			//data_section.write(static_cast<const char*>(&file_version), sizeof(unsigned int));
+			//data_section.write(explicit_salt_value.c_str(), sizeof(char) * explicit_salt_value.size());
+			//data_section.write(encrypted.c_str(), sizeof(char) * encrypted.size());
+			// make json string
+			json ds;
+			ds["version"] = file_version;
+			ds["explicit_salt"] = explicit_salt_value;
+			ds["encrypted"] = encrypted;
+			std::string ds_string;
+			ds_string.append(ds.dump());
+			encode_base64(ds_string, encrypted);
 			// запись в файл
 			std::ofstream out(license_filepath_.c_str());
 

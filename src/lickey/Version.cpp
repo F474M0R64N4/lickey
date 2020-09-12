@@ -4,7 +4,7 @@
 namespace lickey
 {
 	version::version()
-		: version_(1)
+		: version_("1")
 	{
 		// first version
 	}

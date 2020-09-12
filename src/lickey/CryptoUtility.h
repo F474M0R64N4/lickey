@@ -14,7 +14,7 @@ namespace lickey
 
 	auto encode_base64(const std::string& data, std::string& str) -> void;
 
-	auto decode_base64(std::string& str, std::string& data, int& datalen) -> void;
+	auto decode_base64(std::string& str, std::string& data) -> void;
 
 	auto make_salt(salt& salt) -> bool;
 }

@@ -5,12 +5,12 @@ namespace lickey
 {
 	class version
 	{
-		char version_;
+		std::string version_;
 	public:
 		static auto get_instance() -> version&;
 		virtual ~version();
 
-		auto value() const -> unsigned int
+		auto value() const -> std::string
 		{
 			return version_;
 		}

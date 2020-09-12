@@ -43,10 +43,9 @@ namespace lickey
 		str = to_base64(data);
 	}
 
-	auto decode_base64(std::string& str, std::string& data, int& datalen) -> void
+	auto decode_base64(std::string& str, std::string& data) -> void
 	{
 		data = base64::decode(str);
-		datalen = static_cast<int>(str.length());
 	}
 
 	auto make_salt(salt& salt) -> bool
