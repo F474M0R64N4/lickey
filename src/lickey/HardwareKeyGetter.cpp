@@ -14,11 +14,10 @@ using namespace smbios;
 namespace lickey {
   HardwareKeyGetter::HardwareKeyGetter()  = default;
 
-
   HardwareKeyGetter::~HardwareKeyGetter() = default;
 
-
-  HardwareKeys HardwareKeyGetter::operator()() const {
+  auto HardwareKeyGetter::operator()() const -> HardwareKeys
+  {
 	  HardwareKeys keys;
 
 	  // Query size of SMBIOS data.

@@ -1,4 +1,4 @@
-#define BOOST_TEST_MAIN    // mainŠÖ”‚ğ’è‹`
+#define BOOST_TEST_MAIN
 #include "DateTest.h"
 #include "HardwareKeyTest.h"
 #include "LicenseManagerTest.h"

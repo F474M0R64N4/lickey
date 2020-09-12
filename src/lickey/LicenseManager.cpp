@@ -292,7 +292,6 @@ namespace
 				dst.write(el.implicitSalt.Value().c_str(), sizeof(char) * el.implicitSalt.Value().size());
 				dst.write(strDate.c_str(), sizeof(char) * strDate.size());
 				std::string ecryptedImpl;
-				size_t ecryptedImplSize = buf_size;
 				Encrypt(dst.str(), encryptionKey, encryptionIv, ecryptedImpl);
 				/////////////
 				EncodeBase64(ecryptedImpl, encrypted);
