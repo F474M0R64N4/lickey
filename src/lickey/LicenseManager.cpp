@@ -290,6 +290,7 @@ namespace
 			{
 				const auto str_date = to_string(el.last_used_date);
 				assert(8 == str_date.size());
+				// base64 salt + date
 				const auto dst = el.implicit_salt.value().append(str_date);
 				std::string ecrypted_impl;
 				encrypt(dst, encryption_key, encryption_iv, ecrypted_impl);
