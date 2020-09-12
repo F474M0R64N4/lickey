@@ -282,18 +282,18 @@ namespace
 
 		if (make_encryption_key(el.key, el.vendor_name, el.app_name, el.first_feature_sign, el.explicit_salt, encryption_key))
 		{
-			std::string encryptionIv;
+			std::string encryption_iv;
 
-			if (make_encryption_iv(el.key, el.explicit_salt, encryption_key, encryptionIv))
+			if (make_encryption_iv(el.key, el.explicit_salt, encryption_key, encryption_iv))
 			{
 				const auto str_date = to_string(el.last_used_date);
 				assert(8 == str_date.size());
 				std::ostringstream dst(std::ios::binary);
 				dst.write(el.implicit_salt.value().c_str(), sizeof(char) * el.implicit_salt.value().size());
 				dst.write(str_date.c_str(), sizeof(char) * str_date.size());
-				std::string ecryptedImpl;
-				encrypt(dst.str(), encryption_key, encryptionIv, ecryptedImpl);
-				encode_base64(ecryptedImpl, encrypted);
+				std::string ecrypted_impl;
+				encrypt(dst.str(), encryption_key, encryption_iv, ecrypted_impl);
+				encode_base64(ecrypted_impl, encrypted);
 				return true;
 			}
 			LOG(error) << "fail to get iv";
@@ -334,9 +334,9 @@ namespace lickey
 			// validate each feature
 			for (auto cit = license.features_.begin(); cit != license.features_.end(); ++cit)
 			{
-				hash checkSum;
-				make_feature_sign(cit->first, cit->second, license.implicit_salt_, checkSum);
-				cit->second.check_sum_ = checkSum;
+				hash sign;
+				make_feature_sign(cit->first, cit->second, license.implicit_salt_, sign);
+				cit->second.check_sum_ = sign;
 			}
 
 			loaded_license_ = license;
@@ -380,7 +380,6 @@ return false;
 			}
 			else
 			{
-				boost::scoped_array<char> scopedSaltImpl(salt);
 				data_section.read(salt, static_cast<int>(sizeof(char)) * salt_length_in_base64);
 				const auto it = static_cast<size_t>(salt_length_in_base64); //memsize
 				salt[it] = '\0';
@@ -407,16 +406,15 @@ return false;
 			}
 			else
 			{
-				boost::scoped_array<char> scpdBase64Encrypted(base64_encrypted);
 				data_section.read(base64_encrypted, static_cast<int>(sizeof(char)) * remain_len);
 				const auto it = static_cast<size_t>(remain_len); //memsize
 				base64_encrypted[it] = '\0';
 				decoded_size = 0;
-				std::string decoded_; // буфер под дешифрованную лицензию
+				std::string buffer; // буфер под дешифрованную лицензию
 				std::string bse(base64_encrypted);
-				decode_base64(bse, decoded_, decoded_size); // дешифруем лицензию из base64 формата
+				decode_base64(bse, buffer, decoded_size); // дешифруем лицензию из base64 формата
 				//boost::scoped_array<unsigned char> scopedDecoded(decoded);
-				return is_license_decrypt(key, license, decoded_); // дешифруем лицензию
+				return is_license_decrypt(key, license, buffer); // дешифруем лицензию
 			}
 
 			return false;
