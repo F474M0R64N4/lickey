@@ -14,7 +14,5 @@ namespace lickey {
   }
 
 
-  Version::~Version() {
-  }
-
+  Version::~Version() = default;
 }

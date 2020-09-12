@@ -13,14 +13,10 @@ namespace lickey {
   }
 
 
-  Hash::~Hash() {
-  }
+  Hash::~Hash()  = default;
 
 
-  Hash &Hash::operator=(const Hash &obj) {
-    hash = obj.hash;
-    return *this;
-  }
+  Hash &Hash::operator=(const Hash &obj)  = default;
 
 
   Hash &Hash::operator=(const std::string &other) {

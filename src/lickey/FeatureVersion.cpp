@@ -3,8 +3,7 @@
 
 
 namespace lickey {
-  FeatureVersion::FeatureVersion() {
-  }
+  FeatureVersion::FeatureVersion() = default;
 
 
   FeatureVersion::FeatureVersion(const FeatureVersion &obj)
@@ -12,14 +11,10 @@ namespace lickey {
   }
 
 
-  FeatureVersion::~FeatureVersion() {
-  }
+  FeatureVersion::~FeatureVersion() = default;
 
 
-  FeatureVersion &FeatureVersion::operator=(const FeatureVersion &obj) {
-    version = obj.version;
-    return *this;
-  }
+  FeatureVersion &FeatureVersion::operator=(const FeatureVersion &obj) = default;
 
 
   FeatureVersion &FeatureVersion::operator=(const std::string &v) {

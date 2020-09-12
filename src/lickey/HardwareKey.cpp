@@ -2,9 +2,7 @@
 #include "HardwareKey.h"
 
 namespace lickey {
-  HardwareKey::HardwareKey() {
-  }
-
+  HardwareKey::HardwareKey() = default;
 
   HardwareKey::HardwareKey(const HardwareKey &obj)
     : key(obj.key) {
@@ -16,14 +14,10 @@ namespace lickey {
   }
 
 
-  HardwareKey::~HardwareKey() {
-  }
+  HardwareKey::~HardwareKey() = default;
 
 
-  HardwareKey &HardwareKey::operator=(const HardwareKey &obj) {
-    key = obj.key;
-    return *this;
-  }
+  HardwareKey &HardwareKey::operator=(const HardwareKey &obj) = default;
 
 
   HardwareKey &HardwareKey::operator=(const std::string &obj) {

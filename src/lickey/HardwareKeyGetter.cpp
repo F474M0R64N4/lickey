@@ -12,12 +12,10 @@ using namespace mbedcrypto;
 using namespace smbios;
 
 namespace lickey {
-  HardwareKeyGetter::HardwareKeyGetter() {
-  }
+  HardwareKeyGetter::HardwareKeyGetter()  = default;
 
 
-  HardwareKeyGetter::~HardwareKeyGetter() {
-  }
+  HardwareKeyGetter::~HardwareKeyGetter() = default;
 
 
   HardwareKeys HardwareKeyGetter::operator()() const {

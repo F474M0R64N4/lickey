@@ -3,22 +3,15 @@
 
 
 namespace lickey {
-  Salt::Salt() {
-  }
+  Salt::Salt() = default;
 
 
-  Salt::Salt(const Salt &obj)
-    : salt(obj.salt) {
-  }
+  Salt::Salt(const Salt &obj) = default;
 
 
-  Salt::~Salt() {
-  }
+  Salt::~Salt() = default;
 
-  Salt &Salt::operator=(const Salt &obj) {
-    salt = obj.salt;
-    return *this;
-  }
+  Salt &Salt::operator=(const Salt &obj) = default;
 
 
   Salt &Salt::operator=(const std::string &obj) {

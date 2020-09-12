@@ -8,8 +8,7 @@ namespace lickey {
   }
 
 
-  FeatureInfo::~FeatureInfo() {
-  }
+  FeatureInfo::~FeatureInfo() = default;
 
 
   bool FeatureInfo::IsValid() const {
