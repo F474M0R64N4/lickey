@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <fstream>
 #include <utility>
-#include <boost/scoped_array.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 #include "CryptoUtility.h"
@@ -244,9 +243,6 @@ namespace
 				const size_t decrypted_impl_size = buf_size;
 				// расшифровываем данные
 				decrypt(data, encryption_key, encryption_iv, decrypted_impl);
-				//char *decryptedImplChar = static_cast<char *>(malloc(decryptedImplSize));
-				//boost::scoped_array<char> scopedDecryptedImplChar(decryptedImplChar);
-				//std::transform(decryptedImpl.c_str(), decryptedImpl.c_str() + decryptedImplSize, decryptedImplChar, UnsignedChar2Char());
 				const auto valid_len = calc_base64_encoded_size(4) + 8;
 
 				if (static_cast<size_t>(valid_len) > decrypted_impl_size)
@@ -255,7 +251,6 @@ namespace
 					return false;
 				}
 
-				//boost::scoped_array<char> scopedSaltImpl(saltImpl);
 				const auto salt_impl = decrypted_impl.substr(0, 8);
 				implicit_salt = salt_impl;
 
@@ -359,11 +354,6 @@ namespace lickey
 			auto decoded_size = 0;
 			std::string decoded; // дешифрованная лицензия
 			decode_base64(data, decoded, decoded_size);
-			// boost::scoped_array<unsigned char> scopedDecoded(decoded.c_str());
-			/*   if (36 > decodedSize) {
-LOG(error) << "no information in data section";
-return false;
-}*/
 			std::string data_buffer(decoded_size, '\0');
 			std::transform(decoded.c_str(), decoded.c_str() + static_cast<unsigned char>(decoded_size),
 			               data_buffer.begin(), into_char);
@@ -413,7 +403,6 @@ return false;
 				std::string buffer; // буфер под дешифрованную лицензию
 				std::string bse(base64_encrypted);
 				decode_base64(bse, buffer, decoded_size); // дешифруем лицензию из base64 формата
-				//boost::scoped_array<unsigned char> scopedDecoded(decoded);
 				return is_license_decrypt(key, license, buffer); // дешифруем лицензию
 			}
 
