@@ -1,6 +1,11 @@
 # lickey
 software license management system library in C++.
 
+## UML
+
+![](lickey.png "UML Diagram")
+
+
 ## Description
 
 ...
